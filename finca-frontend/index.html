@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva tu Finca - KAZAWENCA'S</title>
+    
+    <!-- ==========================================
+         METADATOS PARA SEO Y REDES SOCIALES (Open Graph)
+         ========================================== -->
+    <meta name="description" content="KAZAWENCA'S - Tu lugar ideal de descanso en el Valle del Cauca. Disfruta de un excelente día de sol, hospedaje o celebra fechas especiales.">
+    <meta name="keywords" content="finca, hospedaje, pasadia, piscina, descanso, reservas, kazawencas, valle del cauca">
+    
+    <!-- Etiquetas Open Graph (WhatsApp, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.tudominio-kazawencas.com/">
+    <meta property="og:title" content="KAZAWENCA'S - Nuestro Paraíso">
+    <meta property="og:description" content="Reserva tu pasadía o hospedaje con nosotros. El espacio perfecto para tu familia y amigos.">
+    <meta property="og:image" content="https://www.tudominio-kazawencas.com/img/Gemini_Generated_Image_c2pf86c2pf86c2pf.png"> <!-- Cambia esto por la URL real de tu imagen cuando subas la página -->
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <!-- ========================================== -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-body">
+
+    <!-- 1. Aquí se inyecta el navbar automáticamente desde navbar.html -->
+    <div id="menu-contenedor"></div>
+
+    <header id="hero" class="hero d-flex flex-column align-items-center justify-content-center">
+        <div class="container hero__container">
+            <h1 class="hero__title">Bienvenidos a Nuestro Paraíso</h1>
+            <p class="hero__subtitle">Si deseas disfrutar de un excelente día con tu grupo de trabajo, familia o celebrar una fecha especial, KAZAWENCA’S es tu mejor opción.</p>
+            <div class="hero__actions">
+                <a href="reservas.html" class="btn hero__btn">¡Reserva tu Fecha Ahora!</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="container main-content">
+        
+       <section id="tarifas" class="rates">
+    <h2 class="rates__title">Nuestras Tarifas</h2>
+
+    <!-- Cambiamos g-0 por g-4 para dar separación vertical en móviles y añadimos px-3 para un margen seguro -->
+    <div class="row g-4 justify-content-center rates__grid px-3 px-md-0">
+
+        <!-- TARJETA HOSPEDAJE: Añadimos col-12 y h-100 -->
+        <div class="col-12 col-md-6 col-lg-5">
+            <div class="card rates__card rates__card--recommended h-100">
+                <span class="rates__badge">Más Popular</span>
+                <div class="card-body d-flex flex-column rates__card-body">
+                    <h3 class="rates__card-type">HOSPEDAJE</h3>
+                    <!-- ... resto de tu contenido intacto ... -->
+                    <p class="rates__card-price">$800.000</p>
+                    <p class="rates__card-period">COP / por noche</p>
+                    <hr class="rates__divider">
+                    <ul class="rates__features">
+                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-clock-fill rates__icon"></i> <strong>Horario:</strong> Ingreso 9:00 AM - Salida 5:00 PM del día siguiente</li>
+                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-people-fill rates__icon"></i> <strong>Capacidad:</strong> 28 a 35 personas</li>
+                        <li class="rates__feature"><i class="bi bi-house-door-fill rates__icon"></i> 8 habitaciones múltiples (ubicación de 3 y 6 personas)</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> 2 bohíos (espacios para recreación cerca a la piscina)</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Piscina de agua natural</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Bafle, silletería y mesas</li>
+                        <li class="rates__feature">
+                            <i class="bi bi-check-circle-fill rates__icon"></i> Menaje de cocina (ollas, estufa, nevera, fogón de leña)
+                            <small class="rates__note"><em>*Se recomienda llevar platos y cubiertos.</em></small>
+                        </li>
+                    </ul>
+                    <div class="rates__alert">
+                        <strong><i class="bi bi-exclamation-triangle-fill rates__alert-icon"></i> NOTA:</strong> Para confirmar se debe abonar el 50% del alquiler. Además, se requiere un depósito de <strong>$100.000</strong> (devuelto al verificar el buen estado de las instalaciones).
+                    </div>
+                    <a href="reservas.html" class="btn rates__btn">Reservar Hospedaje</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA PASADÍA -->
+        <div class="col-md-6 col-lg-5">
+            <div class="card rates__card rates__card--standard">
+                <div class="card-body d-flex flex-column rates__card-body">
+                    <h3 class="rates__card-type">PASADÍA</h3>
+                    <p class="rates__card-price">$500.000</p>
+                    <p class="rates__card-period">COP / por día</p>
+                    <hr class="rates__divider">
+                    <ul class="rates__features">
+                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-clock-fill rates__icon"></i> <strong>Horario:</strong> Ingreso 8:00 AM - Salida 5:00 PM</li>
+                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-people-fill rates__icon"></i> <strong>Capacidad:</strong> Hasta 50 personas</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> 2 bohíos (espacios para recreación cerca a la piscina)</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Piscina de agua natural</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Bafle para ambientar el lugar</li>
+                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Silletería y mesas</li>
+                        <li class="rates__feature">
+                            <i class="bi bi-check-circle-fill rates__icon"></i> Menaje de cocina (ollas, estufa, nevera, fogón de leña)
+                            <small class="rates__note"><em>*Se recomienda llevar platos y cubiertos.</em></small>
+                        </li>
+                    </ul>
+                    <div class="rates__alert">
+                        <strong><i class="bi bi-exclamation-triangle-fill rates__alert-icon"></i> NOTA:</strong> Para confirmar la actividad se debe abonar la mitad del valor del alquiler.
+                    </div>
+                    <a href="reservas.html" class="btn rates__btn">Reservar Pasadía</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+        <section id="galeria" class="gallery">
+    <h2 class="gallery__title">Galería de Fotos</h2>
+    <div class="swiper mySwiper gallery__swiper">
+        <div class="swiper-wrapper" id="contenedor-fotos">
+            <div class="swiper-slide gallery__loader" id="spinner-galeria">
+                <div class="spinner-border gallery__spinner" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="gallery__loader-text">Cargando galería...</p>
+            </div>
+        </div>
+        <!-- Sin flechas — solo paginación -->
+        <div class="swiper-pagination gallery__pagination"></div>
+    </div>
+</section>
+
+        <section id="testimonios" class="testimonials">
+            <h2 class="testimonials__title">Lo que dicen nuestros clientes</h2>
+            <div id="contenedor-resenas" class="row g-4 justify-content-center testimonials__grid">
+                <div class="col-12 testimonials__loader" id="spinner-resenas">
+                    <div class="spinner-border testimonials__spinner" role="status">
+                        <span class="visually-hidden">Cargando reseñas...</span>
+                    </div>
+                    <p class="testimonials__loader-text">Cargando experiencias...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <aside class="fab-widget">
+        <a href="https://wa.me/573000000000" target="_blank" class="fab-widget__link">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Contactar por WhatsApp" class="fab-widget__icon">
+        </a>
+    </aside>
+
+    <footer id="main-footer" class="footer">
+        <div class="container footer__container">
+            <div class="row g-4">
+                <div class="col-md-4 footer__brand-col">
+                    <h5 class="footer__brand-title">KAZAWENCA'S</h5>
+                    <p class="footer__brand-desc">Tu lugar ideal de descanso y conexión con la naturaleza. Escapa de la rutina y vive una experiencia inolvidable.</p>
+                </div>
+                <nav class="col-md-4 footer__nav-col" aria-label="Navegación del pie de página">
+                    <h5 class="footer__heading">Enlaces Rápidos</h5>
+                    <ul class="footer__links">
+                        <li class="footer__link-item"><a href="index.html" class="footer__link">Inicio</a></li>
+                        <li class="footer__link-item"><a href="reservas.html" class="footer__link">Agendar Reserva</a></li>
+                    </ul>
+                </nav>
+                <address class="col-md-4 footer__contact-col">
+                    <h5 class="footer__heading">Contacto</h5>
+                    <p class="footer__contact-item"><i class="bi bi-geo-alt-fill footer__icon"></i> Valle del Cauca, Colombia</p>
+                    <p class="footer__contact-item"><i class="bi bi-telephone-fill footer__icon"></i> +57 300 000 0000</p>
+                    <p class="footer__contact-item"><i class="bi bi-envelope-fill footer__icon"></i> reservas@kazawencas.com</p>
+                </address>
+            </div>
+            <hr class="footer__divider">
+            <div class="footer__copyright">&copy; 2026 KAZAWENCA'S. Todos los derechos reservados.</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>

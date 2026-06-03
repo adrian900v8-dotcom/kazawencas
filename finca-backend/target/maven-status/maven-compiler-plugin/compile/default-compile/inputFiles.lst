@@ -1,0 +1,13 @@
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/config/ConexionBD.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/models/Tarifa.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/dao/ResenaDAO.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/config/JwtUtil.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/dao/ReservaDAO.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/models/Usuario.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/App.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/dao/MultimediaDAO.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/models/Reserva.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/models/Multimedia.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/models/Resena.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/dao/UsuarioDAO.java
+/home/heymer/kazawencas-finca/finca-backend/src/main/java/com/finca/dao/TarifaDAO.java
