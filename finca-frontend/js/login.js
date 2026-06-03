@@ -1,4 +1,4 @@
-const URL_BACKEND = 'http://localhost:7070/api';
+const URL_BACKEND = 'https://kazawencas.onrender.com/api';
 
 // FIX: Actualizado al nuevo ID 'form-login'
 document.getElementById('form-login').addEventListener('submit', async (e) => {
