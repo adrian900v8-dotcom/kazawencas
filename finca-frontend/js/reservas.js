@@ -1,4 +1,4 @@
-const URL_BACKEND = 'https://kazawencas.onrender.com';
+const URL_BACKEND = 'https://kazawencas.onrender.com/api';
 const tokenGuardado = localStorage.getItem('token_finca');
 
 if (!tokenGuardado) {
