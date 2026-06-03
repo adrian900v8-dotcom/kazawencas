@@ -1,4 +1,4 @@
-const URL_BACKEND = 'https://kazawencas.onrender.com/api';
+const URL_BACKEND = 'https://kazawencas.onrender.com';
 
 // FIX: Actualizado al nuevo ID 'form-registro'
 document.getElementById('form-registro').addEventListener('submit', async (e) => {

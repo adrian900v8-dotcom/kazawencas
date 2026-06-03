@@ -1,4 +1,4 @@
-const URL_BACKEND = 'https://kazawencas.onrender.com/api';
+const URL_BACKEND = 'https://kazawencas.onrender.com';
 
 // ==========================================
 // 1. FUNCIÓN PARA CARGAR TARIFAS

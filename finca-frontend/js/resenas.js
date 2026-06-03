@@ -1,4 +1,4 @@
-const URL_BACKEND = 'https://kazawencas.onrender.com/api';
+const URL_BACKEND = 'https://kazawencas.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
