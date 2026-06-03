@@ -81,6 +81,11 @@ public class App {
         // --- Login ---
         app.post("/api/login", ctx -> {
             com.finca.models.Usuario credenciales = ctx.bodyAsClass(com.finca.models.Usuario.class);
+            
+            // LOG DE DIAGNÓSTICO
+            System.out.println("DEBUG APP: JSON recibido -> Correo: [" + credenciales.getCorreo() + 
+                               "], PasswordHash: [" + credenciales.getPasswordHash() + "]");
+
             UsuarioDAO dao = new UsuarioDAO();
             com.finca.models.Usuario usuarioLogueado = dao.login(
                 credenciales.getCorreo(),
