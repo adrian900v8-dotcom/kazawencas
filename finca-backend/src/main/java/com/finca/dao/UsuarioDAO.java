@@ -10,30 +10,35 @@ import java.sql.SQLException;
 public class UsuarioDAO {
 
     public Usuario login(String correo, String password) {
-        Usuario usuario = null;
-        String sql = "SELECT id_usuario, nombre, correo, rol FROM usuarios WHERE correo = ? AND password_hash = ?";
+    Usuario usuario = null;
+    // Agregamos un trim() por si hay espacios invisibles
+    String sql = "SELECT id_usuario, nombre, correo, rol FROM usuarios WHERE TRIM(correo) = TRIM(?) AND TRIM(password_hash) = TRIM(?)";
 
-        try (Connection con = ConexionBD.obtenerConexion();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            
-            ps.setString(1, correo);
-            ps.setString(2, password);
+    System.out.println("DEBUG: Iniciando intento de login para: [" + correo + "]");
 
-            ResultSet rs = ps.executeQuery();
+    try (Connection con = ConexionBD.obtenerConexion();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+        
+        ps.setString(1, correo);
+        ps.setString(2, password);
 
-            if (rs.next()) {
-                usuario = new Usuario();
-                usuario.setIdUsuario(rs.getInt("id_usuario"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setRol(rs.getString("rol"));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al consultar el usuario: " + e.getMessage());
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            System.out.println("DEBUG: ¡Usuario encontrado en Supabase!");
+            usuario = new Usuario();
+            usuario.setIdUsuario(rs.getInt("id_usuario"));
+            usuario.setNombre(rs.getString("nombre"));
+            usuario.setCorreo(rs.getString("correo"));
+            usuario.setRol(rs.getString("rol"));
+        } else {
+            System.out.println("DEBUG: Ningún registro coincide en la BD para ese correo y password.");
         }
-        return usuario;
+    } catch (SQLException e) {
+        System.out.println("ERROR SQL: " + e.getMessage());
     }
-
+    return usuario;
+}
     // --- PRUEBA DEL LOGIN ---
     public static void main(String[] args) {
         UsuarioDAO dao = new UsuarioDAO();
