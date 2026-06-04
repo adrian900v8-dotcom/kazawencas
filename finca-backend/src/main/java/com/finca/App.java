@@ -24,7 +24,7 @@ public class App {
                     
                     // 2. Permitimos tu futura página en Netlify
                     // (Cambiarás esto por el link exacto que te dé Netlify más adelante)
-                    it.allowHost("https://radiant-duckanoo-97112e.netlify.app");
+                    it.allowHost("https://kazawencas.netlify.app");
                     it.allowCredentials = true;
                 });
             });
