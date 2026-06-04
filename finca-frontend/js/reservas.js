@@ -204,16 +204,17 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
     btnConfirmar.innerHTML       = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...';
 
     try {
-        const payload = JSON.parse(window.atob(tokenGuardado.split('.')[1]));
-        const nombreUsuario = localStorage.getItem('nombre_usuario_finca') || 'Cliente'; // Intentamos sacar el nombre guardado
+        // Sacamos el ID directamente del almacenamiento local para evitar nulos
+        const idUsuarioGuardado = localStorage.getItem('id_usuario_finca');
+        const nombreUsuario = localStorage.getItem('nombre_usuario_finca') || 'Cliente';
 
         const nuevaReserva = {
-            idUsuario:   payload.id_usuario,
+            idUsuario:   parseInt(idUsuarioGuardado), // Corrección aplicada aquí
             fechaInicio: inputLlegada.value,
             fechaFin:    fechaFin,
             precioTotal: total,
             idTarifa:    parseInt(selectTarifa.value),
-            estado:      'pendiente', // Ahora las reservas nacen en estado pendiente
+            estado:      'pendiente',
             notasAdmin:  'Reserva web (Pendiente de pago)'
         };
 
@@ -227,10 +228,8 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
         });
 
         if (res.ok) {
-            // Reserva creada en la BD. Ahora enviamos al usuario a WhatsApp.
             if(window.mostrarNotificacion) mostrarNotificacion('¡Pre-reserva creada! Redirigiendo a WhatsApp para el pago...', 'success');
             
-            // Construimos el mensaje para WhatsApp
             const tipoReservaTexto = esPasadia ? 'Pasadía' : 'Hospedaje';
             let mensajeWhatsApp = `Hola Kazawenca's 👋🏼, mi nombre es *${nombreUsuario}*.\n\n`;
             mensajeWhatsApp += `He realizado una solicitud de reserva desde la página web y quiero coordinar el abono para confirmarla:\n`;
@@ -240,14 +239,12 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
             mensajeWhatsApp += `💰 *Total estimado:* ${formatCOP(total)}\n\n`;
             mensajeWhatsApp += `Quedo atento(a) a las instrucciones de pago.`;
 
-            // Codificamos el mensaje para que los espacios y saltos de línea funcionen en la URL
             const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeWhatsApp)}`;
 
             document.getElementById('formulario-reserva').reset();
             displayResumen.classList.add('d-none');
             colSalida.style.display = '';
             
-            // Redirigir a WhatsApp después de 2.5 segundos para que alcancen a leer la notificación verde
             setTimeout(() => {
                 window.location.href = urlWhatsApp;
             }, 2500);
