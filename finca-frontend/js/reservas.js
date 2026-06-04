@@ -1,5 +1,6 @@
 const URL_BACKEND = 'https://kazawencas.onrender.com/api';
 const tokenGuardado = localStorage.getItem('token_finca');
+const NUMERO_WHATSAPP = '573184643996'; // Tu número de WhatsApp configurado
 
 if (!tokenGuardado) {
     window.location.href = 'login.html';
@@ -200,10 +201,11 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
     }
 
     btnConfirmar.disabled        = true;
-    btnConfirmar.innerHTML       = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Confirmando...';
+    btnConfirmar.innerHTML       = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...';
 
     try {
         const payload = JSON.parse(window.atob(tokenGuardado.split('.')[1]));
+        const nombreUsuario = localStorage.getItem('nombre_usuario_finca') || 'Cliente'; // Intentamos sacar el nombre guardado
 
         const nuevaReserva = {
             idUsuario:   payload.id_usuario,
@@ -211,8 +213,8 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
             fechaFin:    fechaFin,
             precioTotal: total,
             idTarifa:    parseInt(selectTarifa.value),
-            estado:      'confirmada',
-            notasAdmin:  'Reserva web'
+            estado:      'pendiente', // Ahora las reservas nacen en estado pendiente
+            notasAdmin:  'Reserva web (Pendiente de pago)'
         };
 
         const res = await fetch(`${URL_BACKEND}/reservas`, {
@@ -225,29 +227,45 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
         });
 
         if (res.ok) {
-            if(window.mostrarNotificacion) mostrarNotificacion('¡Reserva confirmada con éxito! Nos vemos pronto.', 'success');
+            // Reserva creada en la BD. Ahora enviamos al usuario a WhatsApp.
+            if(window.mostrarNotificacion) mostrarNotificacion('¡Pre-reserva creada! Redirigiendo a WhatsApp para el pago...', 'success');
+            
+            // Construimos el mensaje para WhatsApp
+            const tipoReservaTexto = esPasadia ? 'Pasadía' : 'Hospedaje';
+            let mensajeWhatsApp = `Hola Kazawenca's 👋🏼, mi nombre es *${nombreUsuario}*.\n\n`;
+            mensajeWhatsApp += `He realizado una solicitud de reserva desde la página web y quiero coordinar el abono para confirmarla:\n`;
+            mensajeWhatsApp += `📌 *Tipo:* ${tipoReservaTexto}\n`;
+            mensajeWhatsApp += `📅 *Llegada:* ${inputLlegada.value}\n`;
+            if (!esPasadia) mensajeWhatsApp += `📅 *Salida:* ${fechaFin}\n`;
+            mensajeWhatsApp += `💰 *Total estimado:* ${formatCOP(total)}\n\n`;
+            mensajeWhatsApp += `Quedo atento(a) a las instrucciones de pago.`;
+
+            // Codificamos el mensaje para que los espacios y saltos de línea funcionen en la URL
+            const urlWhatsApp = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensajeWhatsApp)}`;
+
             document.getElementById('formulario-reserva').reset();
             displayResumen.classList.add('d-none');
             colSalida.style.display = '';
             
-            // Redirigir al inicio o a las reseñas después de unos segundos
+            // Redirigir a WhatsApp después de 2.5 segundos para que alcancen a leer la notificación verde
             setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 3000);
+                window.location.href = urlWhatsApp;
+            }, 2500);
             
         } else {
             const errorData = await res.json().catch(() => ({}));
             console.error('Error backend:', errorData);
             if(window.mostrarNotificacion) mostrarNotificacion(`Error: ${errorData.message || 'Intenta de nuevo.'}`, 'danger');
+            btnConfirmar.disabled    = false;
+            btnConfirmar.textContent = 'Confirmar Reserva';
         }
 
     } catch (err) {
         console.error('Error de red:', err);
         if(window.mostrarNotificacion) mostrarNotificacion('No se pudo conectar con el servidor.', 'danger');
-    } finally {
         btnConfirmar.disabled    = false;
         btnConfirmar.textContent = 'Confirmar Reserva';
-    }
+    } 
 });
 
 // ==========================================

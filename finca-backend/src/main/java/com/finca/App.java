@@ -87,7 +87,7 @@ public class App {
         // ==========================================
 
         // --- Login ---
-        // --- Login Tradicional ---
+        
         app.post("/api/login", ctx -> {
             try {
                 @SuppressWarnings("unchecked")
@@ -186,7 +186,7 @@ public class App {
             Reserva reserva = ctx.bodyAsClass(Reserva.class);
 
             if (reserva.getEstado() == null || reserva.getEstado().isEmpty()) {
-                reserva.setEstado("confirmada");
+                reserva.setEstado("pendiente");
             }
 
             ReservaDAO dao = new ReservaDAO();
