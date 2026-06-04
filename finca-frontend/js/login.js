@@ -1,10 +1,11 @@
 const URL_BACKEND = 'https://kazawencas.onrender.com/api';
 
-// FIX: Actualizado al nuevo ID 'form-login'
+// ==========================================
+// 1. LÓGICA DE INICIO DE SESIÓN TRADICIONAL
+// ==========================================
 document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // FIX: Actualizado al nuevo ID 'email'
     const correo = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
@@ -14,7 +15,6 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Entrando...';
 
-    // Preparamos los datos recordando que el backend de Java espera "passwordHash"
     const credenciales = {
         correo: correo,
         passwordHash: password 
@@ -30,28 +30,22 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
         });
 
         if (respuesta.status === 200) {
-            // ¡Login exitoso! Javalin nos devolvió el JSON con el token y datos
             const datos = await respuesta.json();
             
-            // Guardamos toda la información en la mochila del navegador (localStorage)
+            // Guardamos la información en localStorage
             localStorage.setItem('token_finca', datos.token);
             localStorage.setItem('rol_finca', datos.rol); 
             localStorage.setItem('id_usuario_finca', datos.id_usuario); 
             localStorage.setItem('nombre_usuario_finca', datos.nombre); 
 
-            // Mostramos la notificación premium
             if (window.mostrarNotificacion) mostrarNotificacion("¡Bienvenido de vuelta!", "success");
 
-            // Redirigimos al usuario a la página de reservas después de 1 segundo
             setTimeout(() => {
                 window.location.href = 'reservas.html';
             }, 1000);
             
         } else {
-            // El backend devolvió un 401 (No autorizado) - Usamos Toast
             if (window.mostrarNotificacion) mostrarNotificacion("Correo o contraseña incorrectos.", "danger");
-            
-            // Restauramos el botón
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = textoOriginal;
         }
@@ -59,8 +53,47 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
         console.error("Error al iniciar sesión:", error);
         if (window.mostrarNotificacion) mostrarNotificacion("Error de conexión con el servidor.", "danger");
         
-        // Restauramos el botón
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = textoOriginal;
     }
 });
+
+// ==========================================
+// 2. LÓGICA DE INICIO DE SESIÓN CON GOOGLE
+// ==========================================
+window.handleCredentialResponse = async (response) => {
+    // response.credential contiene el token encriptado de Google
+    const tokenDeGoogle = response.credential;
+
+    try {
+        // Mostramos un mensajito mientras procesa
+        if (window.mostrarNotificacion) mostrarNotificacion("Validando cuenta con Google...", "info");
+
+        const res = await fetch(`${URL_BACKEND}/login/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: tokenDeGoogle })
+        });
+
+        if (res.ok) {
+            const datos = await res.json();
+            
+            // Guardamos en la mochila igual que en el login tradicional
+            localStorage.setItem('token_finca', datos.token);
+            localStorage.setItem('rol_finca', datos.rol);
+            localStorage.setItem('id_usuario_finca', datos.id_usuario);
+            localStorage.setItem('nombre_usuario_finca', datos.nombre);
+
+            if (window.mostrarNotificacion) mostrarNotificacion("¡Bienvenido con Google!", "success");
+            
+            setTimeout(() => {
+                window.location.href = 'reservas.html';
+            }, 1000);
+        } else {
+            if (window.mostrarNotificacion) mostrarNotificacion("Autenticación con Google fallida.", "danger");
+        }
+    } catch (error) {
+        console.error("Error al conectar con Google:", error);
+        if (window.mostrarNotificacion) mostrarNotificacion("Error de conexión con el servidor.", "danger");
+    }
+};

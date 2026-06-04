@@ -9,8 +9,15 @@ import com.finca.dao.UsuarioDAO;
 import com.finca.dao.ResenaDAO;
 import com.finca.dao.ReservaDAO;
 import com.finca.models.Reserva;
+import com.finca.models.Usuario;
 import com.finca.dao.TarifaDAO;
 import com.finca.dao.MultimediaDAO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class App {
 
@@ -45,7 +52,7 @@ public class App {
                 return;
             }
 
-            boolean esLogin    = ruta.equals("/api/login");
+            boolean esLogin = ruta.equals("/api/login") || ruta.equals("/api/login/google");
             boolean esRegistro = ruta.equals("/api/registro");
 
             // Rutas públicas de solo lectura
@@ -104,6 +111,57 @@ public class App {
                 ));
             } else {
                 ctx.status(401).result("Credenciales incorrectas");
+            }
+        });
+
+        // --- Login con Google ---
+        app.post("/api/login/google", ctx -> {
+            // 1. Recibimos el token encriptado que manda el frontend de Google
+            String tokenGoogle = ctx.bodyAsClass(Map.class).get("token").toString();
+
+            try {
+                // 2. Le preguntamos a los servidores de Google si este token es real
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://oauth2.googleapis.com/tokeninfo?id_token=" + tokenGoogle))
+                        .build();
+                
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    // 3. Google confirma que es real. Extraemos los datos.
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode jsonGoogle = mapper.readTree(response.body());
+                    String correo = jsonGoogle.get("email").asText();
+                    String nombre = jsonGoogle.get("name").asText();
+
+                    UsuarioDAO dao = new UsuarioDAO();
+                    Usuario usuario = dao.buscarPorCorreo(correo);
+
+                    // 4. Si es la primera vez que entra, lo registramos automáticamente
+                    if (usuario == null) {
+                        Usuario nuevo = new Usuario();
+                        nuevo.setNombre(nombre);
+                        nuevo.setCorreo(correo);
+                        dao.registrarGoogle(nuevo);
+                        usuario = dao.buscarPorCorreo(correo); // Lo volvemos a buscar para obtener su ID
+                    }
+
+                    // 5. Generamos nuestro token y le damos acceso
+                    String tokenNuestro = JwtUtil.generarToken(usuario);
+                    ctx.status(200).json(Map.of(
+                        "mensaje",    "Login de Google exitoso",
+                        "token",      tokenNuestro,
+                        "rol",        usuario.getRol(),
+                        "id_usuario", usuario.getIdUsuario(),
+                        "nombre",     usuario.getNombre()
+                    ));
+                } else {
+                    ctx.status(401).result("Token de Google inválido");
+                }
+            } catch (Exception e) {
+                System.out.println("Error validando Google: " + e.getMessage());
+                ctx.status(500).result("Error interno del servidor");
             }
         });
 

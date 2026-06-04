@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="page-body">
 
@@ -25,6 +27,31 @@
                             <p class="text-muted">Bienvenido de nuevo a nuestro paraíso</p>
                         </div>
                         
+                        <!-- Configuración del botón de Google -->
+                        <div id="g_id_onload"
+                             data-client_id="474218595650-6ug5qq9387rv0aj2r1ic6ve35d5elilc.apps.googleusercontent.com"
+                             data-context="signin"
+                             data-ux_mode="popup"
+                             data-callback="handleCredentialResponse"
+                             data-auto_prompt="false">
+                        </div>
+
+                        <div class="g_id_signin mb-3"
+                             data-type="standard"
+                             data-shape="rectangular"
+                             data-theme="outline"
+                             data-text="signin_with"
+                             data-size="large"
+                             data-logo_alignment="center"
+                             data-width="100%">
+                        </div>
+
+                        <div class="text-center my-3 text-muted d-flex align-items-center justify-content-center" style="font-size: 0.85rem;">
+                            <hr class="flex-grow-1 mx-2">
+                            <span>o ingresa con tu correo</span>
+                            <hr class="flex-grow-1 mx-2">
+                        </div>
+
                         <form id="form-login">
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Correo Electrónico</label>
