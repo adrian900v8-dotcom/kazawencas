@@ -200,16 +200,24 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
         return;
     }
 
+    // Sacamos el ID directamente del almacenamiento local
+    const idUsuarioGuardado = localStorage.getItem('id_usuario_finca');
+    const nombreUsuario = localStorage.getItem('nombre_usuario_finca') || 'Cliente';
+
+    // ¡NUEVO ESCUDO! Si no hay ID (sesión vieja o corrupta), obligamos a iniciar sesión bien
+    if (!idUsuarioGuardado || idUsuarioGuardado === "undefined" || idUsuarioGuardado === "null") {
+        if(window.mostrarNotificacion) mostrarNotificacion('Tu sesión necesita actualizarse. Redirigiendo...', 'warning');
+        localStorage.clear(); // Limpiamos basura vieja
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
+    }
+
     btnConfirmar.disabled        = true;
     btnConfirmar.innerHTML       = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...';
 
     try {
-        // Sacamos el ID directamente del almacenamiento local para evitar nulos
-        const idUsuarioGuardado = localStorage.getItem('id_usuario_finca');
-        const nombreUsuario = localStorage.getItem('nombre_usuario_finca') || 'Cliente';
-
         const nuevaReserva = {
-            idUsuario:   parseInt(idUsuarioGuardado), // Corrección aplicada aquí
+            idUsuario:   parseInt(idUsuarioGuardado), // Ahora estamos 100% seguros de que es un número válido
             fechaInicio: inputLlegada.value,
             fechaFin:    fechaFin,
             precioTotal: total,
@@ -245,6 +253,10 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
             displayResumen.classList.add('d-none');
             colSalida.style.display = '';
             
+            // Restauramos el botón por si el usuario presiona "Atrás" en su navegador
+            btnConfirmar.disabled    = false;
+            btnConfirmar.innerHTML   = 'Confirmar Reserva';
+            
             setTimeout(() => {
                 window.location.href = urlWhatsApp;
             }, 2500);
@@ -254,14 +266,14 @@ document.getElementById('formulario-reserva').addEventListener('submit', async (
             console.error('Error backend:', errorData);
             if(window.mostrarNotificacion) mostrarNotificacion(`Error: ${errorData.message || 'Intenta de nuevo.'}`, 'danger');
             btnConfirmar.disabled    = false;
-            btnConfirmar.textContent = 'Confirmar Reserva';
+            btnConfirmar.innerHTML   = 'Confirmar Reserva';
         }
 
     } catch (err) {
         console.error('Error de red:', err);
         if(window.mostrarNotificacion) mostrarNotificacion('No se pudo conectar con el servidor.', 'danger');
         btnConfirmar.disabled    = false;
-        btnConfirmar.textContent = 'Confirmar Reserva';
+        btnConfirmar.innerHTML   = 'Confirmar Reserva';
     } 
 });
 
