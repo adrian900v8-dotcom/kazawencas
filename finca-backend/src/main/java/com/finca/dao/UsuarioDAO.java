@@ -9,40 +9,39 @@ import java.sql.SQLException;
 
 public class UsuarioDAO {
 
-    public Usuario login(String correo, String password) {
-    Usuario usuario = null;
-    // Buscamos solo por correo primero
-    String sql = "SELECT * FROM usuarios WHERE correo = ?";
-    
-    try (Connection con = ConexionBD.obtenerConexion();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-         
-        ps.setString(1, correo.trim());
-        ResultSet rs = ps.executeQuery();
+    public Usuario login(String correo, String password) throws Exception {
+        Usuario usuario = null;
+        // Ahora buscamos solo por el correo para poder revisar qué tipo de cuenta es
+        String sql = "SELECT * FROM usuarios WHERE correo = ?";
         
-        if (rs.next()) {
-            String hashBD = rs.getString("password_hash");
+        try (Connection con = ConexionBD.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+             
+            ps.setString(1, correo.trim());
+            ResultSet rs = ps.executeQuery();
             
-            // Si el usuario se registró con Google, no permitas entrar con contraseña manual
-            if (hashBD.equals("LOGIN_GOOGLE")) {
-                System.out.println("Este usuario debe entrar con Google");
-                return null; 
+            if (rs.next()) {
+                String hashBD = rs.getString("password_hash");
+                
+                // 1. Validar si la cuenta está amarrada a Google
+                if ("LOGIN_GOOGLE".equals(hashBD)) {
+                    throw new Exception("CUENTA_GOOGLE"); // Lanzamos la alerta
+                }
+                
+                // 2. Si es una cuenta normal, comprobamos la contraseña manual
+                if (hashBD.equals(password.trim())) {
+                    usuario = new Usuario();
+                    usuario.setIdUsuario(rs.getInt("id_usuario"));
+                    usuario.setNombre(rs.getString("nombre"));
+                    usuario.setCorreo(rs.getString("correo"));
+                    usuario.setRol(rs.getString("rol"));
+                }
             }
-            
-            // Si no es Google, comparamos la contraseña normal
-            if (hashBD.equals(password.trim())) {
-                usuario = new Usuario();
-                usuario.setIdUsuario(rs.getInt("id_usuario"));
-                usuario.setNombre(rs.getString("nombre"));
-                usuario.setCorreo(rs.getString("correo"));
-                usuario.setRol(rs.getString("rol"));
-            }
+        } catch (SQLException e) {
+            System.out.println("ERROR SQL Login: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("ERROR: " + e.getMessage());
+        return usuario; // Retorna null si la contraseña manual es incorrecta
     }
-    return usuario;
-}
 
     public void registrar(Usuario u) {
         String sql = "INSERT INTO usuarios (nombre, correo, password_hash, rol, fecha_registro) VALUES (?, ?, ?, 'cliente', CURRENT_TIMESTAMP)";

@@ -87,30 +87,38 @@ public class App {
         // ==========================================
 
         // --- Login ---
+        // --- Login Tradicional ---
         app.post("/api/login", ctx -> {
-            com.finca.models.Usuario credenciales = ctx.bodyAsClass(com.finca.models.Usuario.class);
-            
-            // LOG DE DIAGNÓSTICO
-            System.out.println("DEBUG APP: JSON recibido -> Correo: [" + credenciales.getCorreo() + 
-                               "], PasswordHash: [" + credenciales.getPasswordHash() + "]");
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, String> credenciales = ctx.bodyAsClass(Map.class);
+                String correo = credenciales.get("correo");
+                String password = credenciales.get("passwordHash");
 
-            UsuarioDAO dao = new UsuarioDAO();
-            com.finca.models.Usuario usuarioLogueado = dao.login(
-                credenciales.getCorreo(),
-                credenciales.getPasswordHash()
-            );
+                UsuarioDAO dao = new UsuarioDAO();
+                Usuario usuario = dao.login(correo, password);
 
-            if (usuarioLogueado != null) {
-                String token = JwtUtil.generarToken(usuarioLogueado);
-                ctx.status(200).json(Map.of(
-                    "mensaje",    "Login exitoso",
-                    "token",      token,
-                    "rol",        usuarioLogueado.getRol(),
-                    "id_usuario", usuarioLogueado.getIdUsuario(),
-                    "nombre",     usuarioLogueado.getNombre()
-                ));
-            } else {
-                ctx.status(401).result("Credenciales incorrectas");
+                if (usuario != null) {
+                    String token = JwtUtil.generarToken(usuario);
+                    ctx.status(200).json(Map.of(
+                        "mensaje", "Login exitoso",
+                        "token", token,
+                        "rol", usuario.getRol(),
+                        "id_usuario", String.valueOf(usuario.getIdUsuario()), // Corregido a String
+                        "nombre", usuario.getNombre()
+                    ));
+                } else {
+                    // Contraseña incorrecta
+                    ctx.status(401).result("Correo o contraseña incorrectos.");
+                }
+            } catch (Exception e) {
+                // Aquí atrapamos la alerta de la base de datos
+                if ("CUENTA_GOOGLE".equals(e.getMessage())) {
+                    ctx.status(403).result("Esta cuenta está vinculada a Google. Por favor, usa el botón de Google de arriba para entrar.");
+                } else {
+                    System.out.println("Error en login: " + e.getMessage());
+                    ctx.status(500).result("Error interno del servidor");
+                }
             }
         });
 
@@ -153,7 +161,7 @@ public class App {
                         "mensaje",    "Login de Google exitoso",
                         "token",      tokenNuestro,
                         "rol",        usuario.getRol(),
-                        "id_usuario", usuario.getIdUsuario(),
+                        "id_usuario", String.valueOf(usuario.getIdUsuario()), // Corregido a String
                         "nombre",     usuario.getNombre()
                     ));
                 } else {

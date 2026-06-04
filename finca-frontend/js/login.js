@@ -32,7 +32,6 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
         if (respuesta.status === 200) {
             const datos = await respuesta.json();
             
-            // Guardamos la información en localStorage
             localStorage.setItem('token_finca', datos.token);
             localStorage.setItem('rol_finca', datos.rol); 
             localStorage.setItem('id_usuario_finca', datos.id_usuario); 
@@ -44,8 +43,18 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
                 window.location.href = 'reservas.html';
             }, 1000);
             
+        } else if (respuesta.status === 403) {
+            // AQUÍ ATRAPAMOS EL MENSAJE DE GOOGLE
+            const mensajeError = await respuesta.text();
+            if (window.mostrarNotificacion) mostrarNotificacion(mensajeError, "warning");
+            
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = textoOriginal;
+            
         } else {
+            // Cualquier otro error (contraseña incorrecta normal)
             if (window.mostrarNotificacion) mostrarNotificacion("Correo o contraseña incorrectos.", "danger");
+            
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = textoOriginal;
         }
