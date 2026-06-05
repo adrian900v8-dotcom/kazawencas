@@ -228,7 +228,7 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     box-shadow: var(--shadow-soft) !important;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .rates__card:hover {
@@ -774,5 +774,21 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     .fab-widget__icon {
         width: 50px; /* Hace el botón de WhatsApp un poquito más sutil en móviles */
         height: 50px;
+    }
+
+    .hero__btn {
+        padding: 0.8rem 2rem;  /* Reducimos el relleno */
+        font-size: 0.95rem;    /* Letra un poco más pequeña */
+        width: 85%;            /* Evita que toque los bordes de la pantalla */
+        max-width: 320px;      /* Ancho máximo razonable */
+        letter-spacing: 0.5px; /* Reducimos el espaciado entre letras */
+    }
+
+    .hero__subtitle {
+        font-size: 0.95rem;       /* Reducimos el tamaño de la letra */
+        line-height: 1.6;         /* Juntamos un poco más los renglones */
+        padding: 0 1.5rem;        /* Le damos un margen invisible a los lados para que respire */
+        margin-bottom: 2rem;      /* Lo separamos un poco más del botón */
+        font-weight: 300;         /* Hacemos la letra un poco más delgada y elegante */
     }
 }
