@@ -52,7 +52,7 @@ async function cargarFotos() {
         contenedor.innerHTML = fotos.map(foto => `
             <div class="swiper-slide">
                 <div class="card">
-                    <img src="${foto.urlArchivo}" class="card-img-top" alt="${foto.descripcion || 'Instalaciones Finca'}">
+                    <img src="/kazawencas/${foto.urlArchivo.replace('img/', '')}" class="card-img-top" alt="${foto.descripcion || 'Instalaciones Finca'}">
                     <div class="card-body">
                         <h5>${foto.descripcion || 'Instalaciones'}</h5>
                     </div>
