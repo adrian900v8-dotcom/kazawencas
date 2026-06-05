@@ -31,7 +31,7 @@ public class App {
                     
                     // 2. Permitimos tu futura página en Netlify
                     // (Cambiarás esto por el link exacto que te dé Netlify más adelante)
-                    it.allowHost("https://kazawencas.netlify.app");
+                    it.allowHost("https://adrian900v8-dotcom.github.io");
                     it.allowCredentials = true;
                 });
             });
