@@ -175,7 +175,7 @@
     background-image: linear-gradient(
         rgba(0, 0, 0, 0.6),  /* Capa oscura para legibilidad del texto */
         rgba(0, 0, 0, 0.6)
-    ), url('../img/Gemini_Generated_Image_c2pf86c2pf86c2pf.png'); /* Imagen de fondo */
+    ), url('/Gemini_Generated_Image_c2pf86c2pf86c2pf.png'); /* Imagen de fondo */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
