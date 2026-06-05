@@ -208,7 +208,7 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 
 /* Tarjeta Compacta con Imagen */
 .rates__card {
-    border-radius: 20px !important;
+    border-radius: 10px !important;
     overflow: hidden;
     border: none !important;
     box-shadow: var(--shadow-soft) !important;
@@ -653,6 +653,8 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 /* El botón circular */
 /* Botón circular con fondo blanco para que resalte el logo verde */
 .fab-widget__link {
+    position: relative; /* <-- AÑADIR: Necesario para centrar el anillo */
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -665,6 +667,32 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     transition: transform 0.3s ease;
 }
 
+/* El círculo expansivo (Efecto Pulse) */
+.fab-widget__link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    /* El color y grosor del anillo. Usamos tu color terracota */
+    border: 2px solid var(--color-accent); 
+    z-index: -1; /* Lo enviamos detrás del botón blanco */
+    animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* Los fotogramas de la animación */
+@keyframes pulse-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.6); /* Qué tan grande se hace el círculo */
+        opacity: 0;            /* Se desvanece al final */
+    }
+}
 .fab-widget__icon {
     width: 30px;
     height: 30px;
