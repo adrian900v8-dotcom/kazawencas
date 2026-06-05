@@ -14,30 +14,27 @@
     <div id="menu-contenedor"></div>
 
     <main class="page-wrapper">
+    <div class="container text-center mb-5">
+        <h2 class="mb-3" style="color: var(--color-primary); font-family: 'Playfair Display', serif; font-weight: 700;">Área de Clientes</h2>
+        <p class="lead mb-4" style="color: var(--color-muted);">Tu opinión es muy importante para nosotros. Comparte tu experiencia en KAZAWENCA'S.</p>
         
-        <div class="container text-center mb-5">
-            <h2 class="mb-4 text-success fw-bold">Área de Clientes</h2>
-            <p class="lead text-muted mb-5">Tu opinión es muy importante para nosotros. Comparte tu experiencia en KAZAWENCA'S.</p>
-            
-            <button type="button" class="btn btn-success btn-lg fw-bold px-5 rounded-pill shadow hover-scale" data-bs-toggle="modal" data-bs-target="#modalResena">
-                <i class="bi bi-star-fill me-2"></i> Calificar Experiencia
-            </button>
-        </div>
+        <button type="button" class="btn btn-resena" data-bs-toggle="modal" data-bs-target="#modalResena">
+            <i class="bi bi-star-fill me-2"></i> Calificar Experiencia
+        </button>
+    </div>
 
-        <div class="container mt-5">
-            <h3 class="mb-4 text-secondary border-bottom pb-2 text-center">Lo que dicen nuestros clientes</h3>
-            
-            <div id="contenedor-resenas" class="row g-4 justify-content-center">
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="visually-hidden">Cargando reseñas...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Cargando experiencias...</p>
+    <div class="container mt-5">
+        <h3 class="mb-5 text-center" style="color: var(--color-dark); font-family: 'Playfair Display', serif;">Lo que dicen nuestros clientes</h3>
+        <div id="contenedor-resenas" class="row g-4 justify-content-center">
+            <!-- Spinner centrado -->
+            <div class="col-12 text-center" id="spinner-resenas">
+                <div class="spinner-border" style="color: var(--color-primary);" role="status">
+                    <span class="visually-hidden">Cargando...</span>
                 </div>
             </div>
         </div>
-
-    </main>
+    </div>
+</main>
 
     <div class="modal fade" id="modalResena" tabindex="-1" aria-labelledby="modalResenaLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -67,8 +64,8 @@
                             <textarea class="form-control" id="comentario" rows="4" placeholder="La finca es espectacular, las camas son..." required></textarea>
                         </div>
                         <div id="alerta-resena" class="alert d-none" role="alert"></div>
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success fw-bold" id="btn-enviar-resena">Enviar Reseña</button>
+                       <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-resena fw-bold" id="btn-enviar-resena">Enviar Reseña</button>
                         </div>
                     </form>
                 </div>

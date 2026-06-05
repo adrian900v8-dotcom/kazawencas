@@ -190,35 +190,33 @@ async function cargarResenas() {
             return;
         }
 
+        // Usamos nuestras nuevas clases personalizadas para un diseño Eco-Luxury
         contenedorResenas.innerHTML = resenas.map(resena => {
+            // Generamos las estrellas con nuestra nueva clase stars-color
             let estrellasHTML = '';
             for (let i = 1; i <= 5; i++) {
-                estrellasHTML += `<i class="bi bi-star-fill ${i <= resena.calificacion ? 'text-warning' : 'text-secondary'}"></i>`;
+                // Aquí aplicamos la clase star-fill si está calificada
+                estrellasHTML += `<i class="bi ${i <= resena.calificacion ? 'bi-star-fill' : 'bi-star'}"></i>`;
             }
 
             let botonEliminarHTML = '';
             if (rolUsuario && rolUsuario.toLowerCase() === 'admin') {
                 botonEliminarHTML = `
-                    <div class="mt-3 border-top pt-2">
-                        <button class="btn btn-sm btn-outline-danger w-100 fw-bold" onclick="eliminarResena(${resena.idResena})">
-                            <i class="bi bi-trash3-fill"></i> Eliminar Reseña
+                    <div class="mt-4 pt-3 border-top">
+                        <button class="btn btn-sm btn-outline-danger fw-bold w-100" onclick="eliminarResena(${resena.idResena})">
+                            <i class="bi bi-trash3-fill"></i> Eliminar
                         </button>
                     </div>
                 `;
             }
 
             return `
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm border-0 rounded-4">
-                        <div class="card-body text-center d-flex flex-column">
-                            <div class="mb-2">
-                                ${estrellasHTML}
-                            </div>
-                            <h5 class="fw-bold text-success">${resena.nombreUsuario || 'Cliente KAZAWENCA'}</h5>
-                            <p class="text-muted fst-italic flex-grow-1">"${resena.comentario}"</p>
-                            
-                            ${botonEliminarHTML}
-                        </div>
+                <div class="col-md-4">
+                    <div class="resena-card">
+                        <div class="stars-color mb-3">${estrellasHTML}</div>
+                        <p class="resena-texto">"${resena.comentario}"</p>
+                        <span class="resena-autor">${resena.nombreUsuario || 'Cliente KAZAWENCA'}</span>
+                        ${botonEliminarHTML}
                     </div>
                 </div>
             `;

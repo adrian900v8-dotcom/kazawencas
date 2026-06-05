@@ -792,3 +792,65 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
         font-weight: 300;         /* Hacemos la letra un poco más delgada y elegante */
     }
 }
+
+/* =========================================
+   ESTILOS PREMIUM PARA RESEÑAS
+   ========================================= */
+
+/* 1. Modal Elegante */
+.modal-content {
+    border-radius: 20px !important;
+    border: none;
+    box-shadow: var(--shadow-hover);
+    background-color: var(--color-white);
+}
+
+.modal-header {
+    background-color: var(--color-primary) !important;
+    color: var(--color-white);
+    padding: 1.5rem 2rem;
+    border-radius: 20px 20px 0 0;
+}
+
+/* 2. Botón de envío (Terracota) */
+.btn-resena {
+    background-color: var(--color-accent) !important;
+    color: var(--color-white) !important;
+    border-radius: 50rem !important;
+    padding: 0.8rem 2rem !important;
+    border: none !important;
+    transition: 0.3s !important;
+}
+
+.btn-resena:hover {
+    background-color: var(--color-accent-hover) !important;
+}
+
+/* 3. Tarjetas de Reseña (Efecto flotante) */
+.resena-card {
+    background-color: var(--color-white);
+    border-radius: 20px !important;
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+    height: 100%;
+}
+
+.stars-color {
+    color: var(--color-sun) !important; /* Amarillo Sol */
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.resena-texto {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+.resena-autor {
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-top: 1rem;
+    display: block;
+}
