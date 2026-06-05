@@ -270,7 +270,7 @@
 
 /* Tarjeta destacada/recomendada (borde verde y sombra mayor) */
 .rates__card--recommended {
-    border: 0px solid var(--color-primary);
+    border: 1px solid #dee2e6;
     box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
     position: relative;
     border-radius: 0 !important;
