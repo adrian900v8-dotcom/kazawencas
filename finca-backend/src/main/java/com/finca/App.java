@@ -12,6 +12,7 @@ import com.finca.models.Reserva;
 import com.finca.models.Usuario;
 import com.finca.dao.TarifaDAO;
 import com.finca.dao.MultimediaDAO;
+import com.finca.models.GoogleCalendarService; // ← Integración Google Calendar
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
@@ -28,7 +29,7 @@ public class App {
                 cors.addRule(it -> {
                     // 1. Permitimos tu entorno local (Live Server en tu PC)
                     it.allowHost("http://localhost:5500", "http://127.0.0.1:5500");
-                    
+
                     // 2. Permitimos tu futura página en Netlify
                     // (Cambiarás esto por el link exacto que te dé Netlify más adelante)
                     it.allowHost("https://adrian900v8-dotcom.github.io");
@@ -52,16 +53,16 @@ public class App {
                 return;
             }
 
-            boolean esLogin = ruta.equals("/api/login") || ruta.equals("/api/login/google");
+            boolean esLogin    = ruta.equals("/api/login") || ruta.equals("/api/login/google");
             boolean esRegistro = ruta.equals("/api/registro");
 
             // Rutas públicas de solo lectura
             boolean esLecturaPublica = (
-                ruta.equals("/api/tarifas")             ||
-                ruta.equals("/api/multimedia")          ||
-                ruta.equals("/api/resenas")             ||
-                ruta.equals("/api/reservas")            || // ← GET público para admin panel
-                ruta.equals("/api/reservas/ocupadas")      // ← GET público para calendario
+                ruta.equals("/api/tarifas")           ||
+                ruta.equals("/api/multimedia")        ||
+                ruta.equals("/api/resenas")           ||
+                ruta.equals("/api/reservas")          || // ← GET público para admin panel
+                ruta.equals("/api/reservas/ocupadas")    // ← GET público para calendario
             ) && metodo.equals("GET");
 
             if (!esLogin && !esRegistro && !esLecturaPublica) {
@@ -87,25 +88,24 @@ public class App {
         // ==========================================
 
         // --- Login ---
-        
         app.post("/api/login", ctx -> {
             try {
                 @SuppressWarnings("unchecked")
                 Map<String, String> credenciales = ctx.bodyAsClass(Map.class);
-                String correo = credenciales.get("correo");
+                String correo   = credenciales.get("correo");
                 String password = credenciales.get("passwordHash");
 
-                UsuarioDAO dao = new UsuarioDAO();
-                Usuario usuario = dao.login(correo, password);
+                UsuarioDAO dao    = new UsuarioDAO();
+                Usuario    usuario = dao.login(correo, password);
 
                 if (usuario != null) {
                     String token = JwtUtil.generarToken(usuario);
                     ctx.status(200).json(Map.of(
-                        "mensaje", "Login exitoso",
-                        "token", token,
-                        "rol", usuario.getRol(),
-                        "id_usuario", String.valueOf(usuario.getIdUsuario()), // Corregido a String
-                        "nombre", usuario.getNombre()
+                        "mensaje",     "Login exitoso",
+                        "token",       token,
+                        "rol",         usuario.getRol(),
+                        "id_usuario",  String.valueOf(usuario.getIdUsuario()),
+                        "nombre",      usuario.getNombre()
                     ));
                 } else {
                     // Contraseña incorrecta
@@ -129,22 +129,22 @@ public class App {
 
             try {
                 // 2. Le preguntamos a los servidores de Google si este token es real
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
+                HttpClient   client  = HttpClient.newHttpClient();
+                HttpRequest  request = HttpRequest.newBuilder()
                         .uri(URI.create("https://oauth2.googleapis.com/tokeninfo?id_token=" + tokenGoogle))
                         .build();
-                
+
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
                     // 3. Google confirma que es real. Extraemos los datos.
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode jsonGoogle = mapper.readTree(response.body());
-                    String correo = jsonGoogle.get("email").asText();
-                    String nombre = jsonGoogle.get("name").asText();
+                    ObjectMapper mapper     = new ObjectMapper();
+                    JsonNode     jsonGoogle = mapper.readTree(response.body());
+                    String       correo     = jsonGoogle.get("email").asText();
+                    String       nombre     = jsonGoogle.get("name").asText();
 
-                    UsuarioDAO dao = new UsuarioDAO();
-                    Usuario usuario = dao.buscarPorCorreo(correo);
+                    UsuarioDAO dao     = new UsuarioDAO();
+                    Usuario    usuario = dao.buscarPorCorreo(correo);
 
                     // 4. Si es la primera vez que entra, lo registramos automáticamente
                     if (usuario == null) {
@@ -161,7 +161,7 @@ public class App {
                         "mensaje",    "Login de Google exitoso",
                         "token",      tokenNuestro,
                         "rol",        usuario.getRol(),
-                        "id_usuario", String.valueOf(usuario.getIdUsuario()), // Corregido a String
+                        "id_usuario", String.valueOf(usuario.getIdUsuario()),
                         "nombre",     usuario.getNombre()
                     ));
                 } else {
@@ -197,6 +197,24 @@ public class App {
             }
 
             dao.insertar(reserva);
+
+            // ==========================================
+            // INTEGRACIÓN GOOGLE CALENDAR
+            // ==========================================
+            // Si el servicio de calendario falla, la reserva ya fue guardada
+            // en la BD y NO se revierte. Solo se registra un aviso en consola.
+            try {
+                GoogleCalendarService calendarService = new GoogleCalendarService();
+                calendarService.crearEvento(
+                    "Reserva de Usuario ID: " + reserva.getIdUsuario(),
+                    reserva.getFechaInicio(),
+                    reserva.getFechaFin()
+                );
+            } catch (Exception e) {
+                System.err.println("¡Aviso! La reserva se guardó, pero no pudo sincronizarse con Google Calendar: " + e.getMessage());
+            }
+            // ==========================================
+
             ctx.status(201).json(Map.of("message", "Reserva creada correctamente"));
         });
 
@@ -208,7 +226,7 @@ public class App {
                 return;
             }
 
-            int id = Integer.parseInt(ctx.pathParam("id"));
+            int     id      = Integer.parseInt(ctx.pathParam("id"));
             Reserva reserva = ctx.bodyAsClass(Reserva.class);
             reserva.setIdReserva(id);
             new ReservaDAO().actualizar(reserva);
@@ -218,7 +236,7 @@ public class App {
         app.delete("/api/reservas/{id}", ctx -> {
             // Candado de seguridad para eliminar
             String rol = ctx.attribute("rolUsuario");
-            
+
             if (rol == null || !rol.equalsIgnoreCase("admin")) {
                 ctx.status(403).json(Map.of("message", "Acceso denegado. Solo administradores pueden eliminar reservas."));
                 return;
