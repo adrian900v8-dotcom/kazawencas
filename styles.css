@@ -616,31 +616,66 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     font-size: 0.875rem;
     text-align: center;
 }
-/* Botón flotante WhatsApp — tamaño fijo corregido */
+/* =========================================
+   BOTÓN FLOTANTE WHATSAPP (Eco-Luxury)
+   ========================================= */
 .fab-widget {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 30px;
+    right: 30px;
     z-index: 1050;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.fab-widget__link {
+/* El mensaje tipo burbuja */
+.whatsapp-message {
+    background-color: var(--color-white);
+    padding: 12px 20px;
+    border-radius: 15px;
+    box-shadow: var(--shadow-soft);
+    font-size: 0.85rem;
+    color: var(--color-dark);
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid rgba(212, 91, 67, 0.2);
+}
+
+.whatsapp-message span {
     display: block;
-    width: 55px;      /* ← tamaño fijo del contenedor */
-    height: 55px;
+    font-size: 0.7rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* El botón circular */
+/* Botón circular con fondo blanco para que resalte el logo verde */
+.fab-widget__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-white); /* Cambiamos el fondo a blanco */
+    border: 0px solid var(--color-accent); /* Un borde terracota para que combine */
+    border-radius: 50%;
+    box-shadow: 0 6px 15px rgba(212, 91, 67, 0.2);
+    transition: transform 0.3s ease;
 }
 
 .fab-widget__icon {
-    width: 55px;      /* ← ancho fijo */
-    height: 55px;     /* ← alto fijo, este era el que faltaba */
-    object-fit: contain;
-    transition: transform 0.2s ease;
+    width: 30px;
+    height: 30px;
+    fill: #D45B43; /* Cambiado de #ffffff a este verde */
+    transition: fill 0.3s ease;
 }
 
-.fab-widget__icon:hover {
-    transform: scale(1.1);
+/* Opcional: que cambie de color cuando pasas el mouse por encima */
+.fab-widget__link:hover .fab-widget__icon {
+    fill: var(--color-light); /* O el color que prefieras */
 }
-
 /* =========================================
    CORRECCIONES PARA MÓVILES (Celulares Reales)
    ========================================= */
@@ -689,7 +724,10 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
         margin-bottom: 2rem;      /* Lo separamos un poco más del botón */
         font-weight: 300;         /* Hacemos la letra un poco más delgada y elegante */
     }
+
+    
 }
+
 
 /* Corrección para que el precio no se corte en móviles */
 @media (max-width: 576px) {

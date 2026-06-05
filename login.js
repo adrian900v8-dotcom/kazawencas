@@ -40,7 +40,7 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
             if (window.mostrarNotificacion) mostrarNotificacion("¡Bienvenido de vuelta!", "success");
 
             setTimeout(() => {
-                window.location.href = 'reservas.html';
+                window.location.href = 'index.html';
             }, 1000);
             
         } else if (respuesta.status === 403) {
@@ -96,7 +96,7 @@ window.handleCredentialResponse = async (response) => {
             if (window.mostrarNotificacion) mostrarNotificacion("¡Bienvenido con Google!", "success");
             
             setTimeout(() => {
-                window.location.href = 'reservas.html';
+                window.location.href = 'index.html';
             }, 1000);
         } else {
             if (window.mostrarNotificacion) mostrarNotificacion("Autenticación con Google fallida.", "danger");
