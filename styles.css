@@ -742,3 +742,37 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 .fab-widget__icon:hover {
     transform: scale(1.1);
 }
+
+/* =========================================
+   CORRECCIONES PARA MÓVILES (Celulares Reales)
+   ========================================= */
+@media (max-width: 768px) {
+    /* 1. Solución a la imagen con zoom extremo */
+    .hero {
+        background-attachment: scroll !important; /* Desactiva el efecto que marea a los celulares */
+        background-position: center center;
+        min-height: 75vh; /* Reduce un poco la altura para que encaje mejor */
+    }
+
+    /* 2. Ajuste del texto del Hero para que no quede tan abajo */
+    .hero__title {
+        margin-top: 6rem;
+        font-size: 2.5rem; /* Ajusta el tamaño de la letra */
+    }
+
+    /* 3. Evitar que el botón de WhatsApp tape los títulos */
+    .rates {
+        padding-top: 2rem; /* Le da un respiro al título de tarifas */
+    }
+    
+    .fab-widget {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .fab-widget__link,
+    .fab-widget__icon {
+        width: 50px; /* Hace el botón de WhatsApp un poquito más sutil en móviles */
+        height: 50px;
+    }
+}
