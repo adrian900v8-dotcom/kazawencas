@@ -270,10 +270,11 @@
 
 /* Tarjeta destacada/recomendada (borde verde y sombra mayor) */
 .rates__card--recommended {
-    border: none; /* Quitamos el borde por completo */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.12); /* Sombra un poco más fuerte para que siga destacando */
-    position: relative;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
     border-radius: 0 !important;
+    position: relative;
+    
 }
 
 /* Tarjeta estándar (borde gris suave, sin curvas) */
