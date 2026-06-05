@@ -8,43 +8,63 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 public class GoogleCalendarService {
 
     public void crearEvento(String nombreUsuario, String fechaInicio, String fechaFin) throws Exception {
+        // 1. Usamos una variable temporal para determinar de dónde vienen los datos
+        InputStream streamTemporal = null;
 
-        // 1. Cargar las credenciales de la cuenta de servicio
-        //    El archivo 'credentials.json' debe estar en la carpeta raíz 'finca-backend'
-        GoogleCredential credential = GoogleCredential
-                .fromStream(new FileInputStream("credentials.json"))
-                .createScoped(Collections.singletonList("https://www.googleapis.com/auth/calendar"));
+        // Intentar leer desde las Variables de Entorno (Esto funcionará en RENDER)
+        String credencialesEnv = System.getenv("GOOGLE_CREDENTIALS");
+        
+        if (credencialesEnv != null && !credencialesEnv.trim().isEmpty()) {
+            streamTemporal = new ByteArrayInputStream(credencialesEnv.getBytes(StandardCharsets.UTF_8));
+            System.out.println("Conectando a Google Calendar vía Render (Variables de Entorno)");
+        } else {
+            // Intentar leer desde el archivo físico (Esto funcionará en TU PC)
+            String nombreArchivo = "credentials.json";
+            try {
+                streamTemporal = new FileInputStream(nombreArchivo);
+                System.out.println("Conectando a Google Calendar vía PC local");
+            } catch (Exception e) {
+                streamTemporal = getClass().getClassLoader().getResourceAsStream(nombreArchivo);
+            }
+        }
 
-        // 2. Construir el cliente del servicio de Google Calendar
-        Calendar service = new Calendar.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GsonFactory.getDefaultInstance(),
-                credential)
-                .setApplicationName("Kazawencas")
-                .build();
+        if (streamTemporal == null) {
+            throw new java.io.FileNotFoundException("Error crítico: No hay credenciales en Render ni en la PC local.");
+        }
 
-        // 3. Crear el objeto del evento con nombre y descripción
-        Event evento = new Event()
-                .setSummary("Reserva: " + nombreUsuario)
-                .setDescription("Nueva reserva confirmada en KAZAWENCA'S.");
+        // 2. Pasamos el temporal a la variable definitiva del try (Esto soluciona el error rojo)
+        try (InputStream is = streamTemporal) {
+            GoogleCredential credential = GoogleCredential.fromStream(is)
+                    .createScoped(Collections.singletonList("https://www.googleapis.com/auth/calendar"));
 
-        // 4. Configurar las fechas de inicio y fin
-        //    Formato esperado desde la BD/frontend: AAAA-MM-DD
-        EventDateTime inicio = new EventDateTime().setDate(new DateTime(fechaInicio));
-        evento.setStart(inicio);
+            Calendar service = new Calendar.Builder(
+                    GoogleNetHttpTransport.newTrustedTransport(),
+                    GsonFactory.getDefaultInstance(),
+                    credential)
+                    .setApplicationName("Kazawencas")
+                    .build();
 
-        EventDateTime fin = new EventDateTime().setDate(new DateTime(fechaFin));
-        evento.setEnd(fin);
+            Event evento = new Event()
+                    .setSummary("Reserva: " + nombreUsuario)
+                    .setDescription("Reserva confirmada en Finca Kazawenca's");
 
-        // 5. Insertar el evento en el calendario principal de la cuenta
-        service.events().insert("primary", evento).execute();
+            EventDateTime inicio = new EventDateTime().setDate(new DateTime(fechaInicio));
+            evento.setStart(inicio);
 
-        System.out.println("Evento creado con éxito para: " + nombreUsuario);
+            EventDateTime fin = new EventDateTime().setDate(new DateTime(fechaFin));
+            evento.setEnd(fin);
+
+            service.events().insert("primary", evento).execute();
+            System.out.println("¡Éxito! Evento creado en el calendario para: " + nombreUsuario);
+        }
     }
 }
