@@ -175,8 +175,12 @@ window.mostrarConfirmacion = function(mensaje, callbackAceptar) {
 // 3. LÓGICA PARA CARGAR Y PINTAR RESEÑAS
 // ==========================================
 async function cargarResenas() {
-    const contenedorResenas = document.getElementById('contenedor-resenas');
-    if (!contenedorResenas) return;
+    // Buscamos si estamos en la página de reseñas o en el index
+    const contenedorResenasPagina = document.getElementById('contenedor-resenas');
+    const contenedorResenasIndex = document.getElementById('slider-resenas-index');
+    
+    // Si no hay ninguno, no hacemos nada
+    if (!contenedorResenasPagina && !contenedorResenasIndex) return;
 
     try {
         const respuesta = await fetch(`${URL_BACKEND}/resenas`);
@@ -185,45 +189,85 @@ async function cargarResenas() {
         const resenas = await respuesta.json();
         const rolUsuario = localStorage.getItem('rol_finca');
 
-        if (resenas.length === 0) {
-            contenedorResenas.innerHTML = '<div class="col-12 text-center text-muted">Aún no hay reseñas. ¡Sé el primero en dejar una!</div>';
+        const mensajeVacio = '<div class="w-100 text-center text-muted">Aún no hay reseñas. ¡Sé el primero en dejar una!</div>';
+
+        // Si estamos en el index y no hay reseñas
+        if (resenas.length === 0 && contenedorResenasIndex) {
+            contenedorResenasIndex.innerHTML = mensajeVacio;
             return;
         }
 
-        // Usamos nuestras nuevas clases personalizadas para un diseño Eco-Luxury
-        contenedorResenas.innerHTML = resenas.map(resena => {
-            // Generamos las estrellas con nuestra nueva clase stars-color
-            let estrellasHTML = '';
-            for (let i = 1; i <= 5; i++) {
-                // Aquí aplicamos la clase star-fill si está calificada
-                estrellasHTML += `<i class="bi ${i <= resena.calificacion ? 'bi-star-fill' : 'bi-star'}"></i>`;
-            }
+        // Si estamos en la página de reseñas y no hay
+        if (resenas.length === 0 && contenedorResenasPagina) {
+            contenedorResenasPagina.innerHTML = mensajeVacio;
+            return;
+        }
 
-            let botonEliminarHTML = '';
-            if (rolUsuario && rolUsuario.toLowerCase() === 'admin') {
-                botonEliminarHTML = `
-                    <div class="mt-4 pt-3 border-top">
-                        <button class="btn btn-sm btn-outline-danger fw-bold w-100" onclick="eliminarResena(${resena.idResena})">
-                            <i class="bi bi-trash3-fill"></i> Eliminar
-                        </button>
+        // Lógica para pintar en la PÁGINA DE RESEÑAS (resenas.html) - Estilo Cuadrícula Bootstrap
+        if (contenedorResenasPagina) {
+             contenedorResenasPagina.innerHTML = resenas.map(resena => {
+                let estrellasHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    estrellasHTML += `<i class="bi ${i <= resena.calificacion ? 'bi-star-fill' : 'bi-star'}"></i>`;
+                }
+
+                let botonEliminarHTML = '';
+                if (rolUsuario && rolUsuario.toLowerCase() === 'admin') {
+                    botonEliminarHTML = `
+                        <div class="mt-4 pt-3 border-top">
+                            <button class="btn btn-sm btn-outline-danger fw-bold w-100" onclick="eliminarResena(${resena.idResena})">
+                                <i class="bi bi-trash3-fill"></i> Eliminar
+                            </button>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="col-md-4">
+                        <div class="resena-card h-100 d-flex flex-column">
+                            <div class="stars-color mb-3">${estrellasHTML}</div>
+                            <p class="resena-texto flex-grow-1">"${resena.comentario}"</p>
+                            <strong class="resena-autor">${resena.nombreUsuario || 'Cliente KAZAWENCA'}</strong>
+                            ${botonEliminarHTML}
+                        </div>
                     </div>
                 `;
-            }
+            }).join('');
+        }
 
-            return `
-                <div class="col-md-4">
-                    <div class="resena-card">
-                        <div class="stars-color mb-3">${estrellasHTML}</div>
-                        <p class="resena-texto">"${resena.comentario}"</p>
-                        <span class="resena-autor">${resena.nombreUsuario || 'Cliente KAZAWENCA'}</span>
-                        ${botonEliminarHTML}
+        // Lógica para pintar en el INDEX (index.html) - Estilo Slider Horizontal
+        if (contenedorResenasIndex) {
+            // Quitamos el spinner
+            const spinnerIndex = document.getElementById('spinner-resenas-index');
+            if(spinnerIndex) spinnerIndex.remove();
+
+            contenedorResenasIndex.innerHTML = resenas.map(resena => {
+                let estrellasHTML = '';
+                for (let i = 1; i <= 5; i++) {
+                    estrellasHTML += `<i class="bi ${i <= resena.calificacion ? 'bi-star-fill' : 'bi-star'}"></i>`;
+                }
+
+                return `
+                    <div class="card testimonial-card">
+                        <div class="card-body d-flex flex-column">
+                            <div class="stars-color mb-3">
+                                ${estrellasHTML}
+                            </div>
+                            <p class="testimonial-card__text flex-grow-1">"${resena.comentario}"</p>
+                            <div class="mt-4">
+                                <strong class="d-block text-dark" style="font-size: 0.95rem;">${resena.nombreUsuario || 'Cliente KAZAWENCA'}</strong>
+                                <span class="small text-accent text-uppercase mt-1 d-block" style="font-size: 0.7rem; letter-spacing: 1px;">HUÉSPED CONFIRMADO</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
+        }
+
     } catch (error) {
         console.error("Error cargando reseñas:", error);
-        contenedorResenas.innerHTML = '<div class="col-12 text-center text-danger">Error al cargar las experiencias.</div>';
+        if(contenedorResenasPagina) contenedorResenasPagina.innerHTML = '<div class="col-12 text-center text-danger">Error al cargar las experiencias.</div>';
+        if(contenedorResenasIndex) contenedorResenasIndex.innerHTML = '<div class="w-100 text-center text-danger">Error al cargar las experiencias.</div>';
     }
 }
 

@@ -836,3 +836,80 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     display: block;
 }
 
+/* =========================================
+   RESEÑAS (Estilo Hemma Genki - INDEX)
+   ========================================= */
+.testimonials {
+    /* Degradado sutil para la sección en el index */
+    background: linear-gradient(to bottom, var(--color-light) 0%, #EFEBE1 50%, var(--color-light) 100%);
+    overflow: hidden;
+}
+
+.testimonials__title {
+    font-family: 'Playfair Display', serif;
+    font-size: calc(2rem + 1vw);
+    color: var(--color-dark);
+}
+
+.text-accent {
+    color: var(--color-accent) !important;
+}
+
+.tracking-wide {
+    letter-spacing: 2px;
+}
+
+/* Slider Horizontal (Scroll Snap) - Solo afecta al index */
+.testimonials__slider {
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    padding: 1rem 0.5rem 3rem 0.5rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; 
+}
+
+.testimonials__slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* Tarjeta individual del Slider (Index) */
+.testimonial-card {
+    flex: 0 0 85%; /* En móviles ocupa casi todo el ancho */
+    scroll-snap-align: center;
+    background-color: var(--color-white);
+    border: none !important;
+    border-radius: 12px !important; 
+    padding: 2rem 1.5rem;
+    box-shadow: 0 10px 30px rgba(62, 54, 46, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(62, 54, 46, 0.1);
+}
+
+.testimonial-card__text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--color-dark);
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+    .testimonial-card {
+        flex: 0 0 calc(50% - 0.75rem); /* 2 columnas en tablets */
+    }
+}
+
+@media (min-width: 992px) {
+    .testimonials__slider {
+        justify-content: center; /* Centrar tarjetas si son pocas en desktop */
+    }
+    .testimonial-card {
+        flex: 0 0 calc(33.333% - 1rem); /* 3 columnas en desktop */
+    }
+}
