@@ -41,7 +41,7 @@ public class GoogleCalendarService {
             throw new java.io.FileNotFoundException("Error crítico: No hay credenciales en Render ni en la PC local.");
         }
 
-        // 2. Pasamos el temporal a la variable definitiva del try (Esto soluciona el error rojo)
+        // 2. Pasamos el temporal a la variable definitiva del try
         try (InputStream is = streamTemporal) {
             GoogleCredential credential = GoogleCredential.fromStream(is)
                     .createScoped(Collections.singletonList("https://www.googleapis.com/auth/calendar"));
@@ -53,9 +53,12 @@ public class GoogleCalendarService {
                     .setApplicationName("Kazawencas")
                     .build();
 
+            // Aquí mejoramos el texto que aparecerá en el calendario
             Event evento = new Event()
-                    .setSummary("Reserva: " + nombreUsuario)
-                    .setDescription("Reserva confirmada en Finca Kazawenca's");
+                    .setSummary("Reserva confirmada: " + nombreUsuario)
+                    .setDescription("Reserva aprobada desde el panel de administración.\n" +
+                                    "Cliente: " + nombreUsuario + "\n\n" +
+                                    "¡Preparar la finca para su llegada!");
 
             EventDateTime inicio = new EventDateTime().setDate(new DateTime(fechaInicio));
             evento.setStart(inicio);
@@ -63,9 +66,10 @@ public class GoogleCalendarService {
             EventDateTime fin = new EventDateTime().setDate(new DateTime(fechaFin));
             evento.setEnd(fin);
 
-            // Reemplaza por esto:
+            // Reemplaza por el ID de tu calendario de la Finca
             String idCalendario = "9b22ac89e12ad53c6949dcdfb2b3b03b539668472360f6b91a571617ca94339c@group.calendar.google.com";
             service.events().insert(idCalendario, evento).execute();
+            
             System.out.println("¡Éxito! Evento creado en el calendario para: " + nombreUsuario);
         }
     }

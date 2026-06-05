@@ -31,7 +31,6 @@ public class App {
                     it.allowHost("http://localhost:5500", "http://127.0.0.1:5500");
 
                     // 2. Permitimos tu futura página en Netlify
-                    // (Cambiarás esto por el link exacto que te dé Netlify más adelante)
                     it.allowHost("https://adrian900v8-dotcom.github.io");
                     it.allowCredentials = true;
                 });
@@ -124,11 +123,9 @@ public class App {
 
         // --- Login con Google ---
         app.post("/api/login/google", ctx -> {
-            // 1. Recibimos el token encriptado que manda el frontend de Google
             String tokenGoogle = ctx.bodyAsClass(Map.class).get("token").toString();
 
             try {
-                // 2. Le preguntamos a los servidores de Google si este token es real
                 HttpClient   client  = HttpClient.newHttpClient();
                 HttpRequest  request = HttpRequest.newBuilder()
                         .uri(URI.create("https://oauth2.googleapis.com/tokeninfo?id_token=" + tokenGoogle))
@@ -137,7 +134,6 @@ public class App {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    // 3. Google confirma que es real. Extraemos los datos.
                     ObjectMapper mapper     = new ObjectMapper();
                     JsonNode     jsonGoogle = mapper.readTree(response.body());
                     String       correo     = jsonGoogle.get("email").asText();
@@ -146,16 +142,14 @@ public class App {
                     UsuarioDAO dao     = new UsuarioDAO();
                     Usuario    usuario = dao.buscarPorCorreo(correo);
 
-                    // 4. Si es la primera vez que entra, lo registramos automáticamente
                     if (usuario == null) {
                         Usuario nuevo = new Usuario();
                         nuevo.setNombre(nombre);
                         nuevo.setCorreo(correo);
                         dao.registrarGoogle(nuevo);
-                        usuario = dao.buscarPorCorreo(correo); // Lo volvemos a buscar para obtener su ID
+                        usuario = dao.buscarPorCorreo(correo); 
                     }
 
-                    // 5. Generamos nuestro token y le damos acceso
                     String tokenNuestro = JwtUtil.generarToken(usuario);
                     ctx.status(200).json(Map.of(
                         "mensaje",    "Login de Google exitoso",
@@ -182,6 +176,7 @@ public class App {
             ctx.json(new ReservaDAO().obtenerFechasOcupadas());
         });
 
+        // Endpoint POST: Solo guarda en base de datos, NO en Calendar
         app.post("/api/reservas", ctx -> {
             Reserva reserva = ctx.bodyAsClass(Reserva.class);
 
@@ -197,27 +192,10 @@ public class App {
             }
 
             dao.insertar(reserva);
-
-            // ==========================================
-            // INTEGRACIÓN GOOGLE CALENDAR
-            // ==========================================
-            // Si el servicio de calendario falla, la reserva ya fue guardada
-            // en la BD y NO se revierte. Solo se registra un aviso en consola.
-            try {
-                GoogleCalendarService calendarService = new GoogleCalendarService();
-                calendarService.crearEvento(
-                    "Reserva de Usuario ID: " + reserva.getIdUsuario(),
-                    reserva.getFechaInicio(),
-                    reserva.getFechaFin()
-                );
-            } catch (Exception e) {
-                System.err.println("¡Aviso! La reserva se guardó, pero no pudo sincronizarse con Google Calendar: " + e.getMessage());
-            }
-            // ==========================================
-
             ctx.status(201).json(Map.of("message", "Reserva creada correctamente"));
         });
 
+        // Endpoint PUT: Guarda en BD y SI ES CONFIRMADA, guarda en Calendar
         app.put("/api/reservas/{id}", ctx -> {
             // Candado de seguridad para editar
             String rol = ctx.attribute("rolUsuario");
@@ -229,7 +207,30 @@ public class App {
             int     id      = Integer.parseInt(ctx.pathParam("id"));
             Reserva reserva = ctx.bodyAsClass(Reserva.class);
             reserva.setIdReserva(id);
+            
+            // 1. Actualizamos en base de datos
             new ReservaDAO().actualizar(reserva);
+
+            // 2. Integración con Google Calendar (Solo si se confirma)
+            if ("confirmada".equalsIgnoreCase(reserva.getEstado())) {
+                try {
+                    String nombreCliente = reserva.getNombreUsuario();
+                    if (nombreCliente == null || nombreCliente.trim().isEmpty()) {
+                        nombreCliente = "Cliente con ID " + reserva.getIdUsuario();
+                    }
+
+                    GoogleCalendarService calendarService = new GoogleCalendarService();
+                    calendarService.crearEvento(
+                        nombreCliente,
+                        reserva.getFechaInicio(),
+                        reserva.getFechaFin()
+                    );
+                    System.out.println("Sincronización exitosa: Reserva confirmada para " + nombreCliente);
+                } catch (Exception e) {
+                    System.err.println("Error al enviar la reserva confirmada a Calendar: " + e.getMessage());
+                }
+            }
+
             ctx.result("Reserva actualizada");
         });
 
