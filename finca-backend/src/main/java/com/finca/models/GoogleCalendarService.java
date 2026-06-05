@@ -63,7 +63,9 @@ public class GoogleCalendarService {
             EventDateTime fin = new EventDateTime().setDate(new DateTime(fechaFin));
             evento.setEnd(fin);
 
-            service.events().insert("primary", evento).execute();
+            // Reemplaza por esto:
+            String idCalendario = "b3d4f40f0980ca6cebf747ab4252de36ca735e5898858d4a9ecdb1cebb9eb8e3@group.calendar.google.com";
+            service.events().insert(idCalendario, evento).execute();
             System.out.println("¡Éxito! Evento creado en el calendario para: " + nombreUsuario);
         }
     }
