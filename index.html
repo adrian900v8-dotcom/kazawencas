@@ -41,70 +41,47 @@
 
     <main id="main-content" class="container main-content">
         
-       <section id="tarifas" class="rates">
+      <section id="tarifas" class="rates">
     <h2 class="rates__title">Nuestras Tarifas</h2>
+    <div class="row g-4 justify-content-center rates__grid">
+        
+        <!-- TARJETA HOSPEDAJE -->
+<div class="col-12 col-md-5 col-lg-4">
+    <div class="card rates__card">
+        <img src="habitacion.jpeg" class="card-img-top" alt="Hospedaje" style="height: 250px; object-fit: cover;">
+        <span class="badge-capacity">CAPACIDAD: 28-35 PERSONAS</span>
+        
+        <div class="card-body rates__card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="rates__card-type mb-0">HOSPEDAJE</h3>
+                <p class="rates__card-price mb-0">$800.000 <small style="font-size: 0.7rem;">/noche</small></p>
+            </div>
+            <p class="rates__card-features">8 HABITACIONES · PISCINA · BOHÍOS</p>
+            <p class="rates__card-desc">Disfruta de una experiencia completa de descanso con tu grupo en nuestras instalaciones campestres.</p>
+            <a href="reservas.html" class="btn btn-accent w-100 mt-3">Reservar</a>
+        </div>
+    </div>
+</div>
 
-    <!-- Cambiamos g-0 por g-4 para dar separación vertical en móviles y añadimos px-3 para un margen seguro -->
-    <div class="row g-4 justify-content-center rates__grid px-3 px-md-0">
-
-        <!-- TARJETA HOSPEDAJE: Añadimos col-12 y h-100 -->
-        <div class="col-12 col-md-6 col-lg-5">
-            <div class="card rates__card rates__card--recommended h-100">
-                <span class="rates__badge">Más Popular</span>
-                <div class="card-body d-flex flex-column rates__card-body">
-                    <h3 class="rates__card-type">HOSPEDAJE</h3>
-                    <!-- ... resto de tu contenido intacto ... -->
-                    <p class="rates__card-price">$800.000</p>
-                    <p class="rates__card-period">COP / por noche</p>
-                    <hr class="rates__divider">
-                    <ul class="rates__features">
-                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-clock-fill rates__icon"></i> <strong>Horario:</strong> Ingreso 9:00 AM - Salida 5:00 PM del día siguiente</li>
-                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-people-fill rates__icon"></i> <strong>Capacidad:</strong> 28 a 35 personas</li>
-                        <li class="rates__feature"><i class="bi bi-house-door-fill rates__icon"></i> 8 habitaciones múltiples (ubicación de 3 y 6 personas)</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> 2 bohíos (espacios para recreación cerca a la piscina)</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Piscina de agua natural</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Bafle, silletería y mesas</li>
-                        <li class="rates__feature">
-                            <i class="bi bi-check-circle-fill rates__icon"></i> Menaje de cocina (ollas, estufa, nevera, fogón de leña)
-                            <small class="rates__note"><em>*Se recomienda llevar platos y cubiertos.</em></small>
-                        </li>
-                    </ul>
-                    <div class="rates__alert">
-                        <strong><i class="bi bi-exclamation-triangle-fill rates__alert-icon"></i> NOTA:</strong> Para confirmar se debe abonar el 50% del alquiler. Además, se requiere un depósito de <strong>$100.000</strong> (devuelto al verificar el buen estado de las instalaciones).
-                    </div>
-                    <a href="reservas.html" class="btn rates__btn">Reservar Hospedaje</a>
-                </div>
+<!-- TARJETA PASADÍA -->
+<div class="col-12 col-md-5 col-lg-4">
+    <div class="card rates__card">
+        <img src="principal.jpeg" class="card-img-top" alt="Pasadía" style="height: 250px; object-fit: cover;">
+        <span class="badge-capacity">CAPACIDAD: HASTA 50 PERSONAS</span>
+        
+        <div class="card-body rates__card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="rates__card-type mb-0">PASADÍA</h3>
+                <p class="rates__card-price mb-0">$500.000 <small style="font-size: 0.7rem;">/día</small></p>
+            </div>
+            <p class="rates__card-features">ZONA SOCIAL · PISCINA · BAFLE</p>
+            <p class="rates__card-desc">El espacio ideal para compartir un día de sol con amigos y familia en un entorno natural único.</p>
+            <a href="reservas.html" class="btn btn-accent w-100 mt-3">Reservar</a>
+        </div>
+    </div>
+</div>
             </div>
         </div>
-
-        <!-- TARJETA PASADÍA -->
-        <div class="col-md-6 col-lg-5">
-            <div class="card rates__card rates__card--standard">
-                <div class="card-body d-flex flex-column rates__card-body">
-                    <h3 class="rates__card-type">PASADÍA</h3>
-                    <p class="rates__card-price">$500.000</p>
-                    <p class="rates__card-period">COP / por día</p>
-                    <hr class="rates__divider">
-                    <ul class="rates__features">
-                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-clock-fill rates__icon"></i> <strong>Horario:</strong> Ingreso 8:00 AM - Salida 5:00 PM</li>
-                        <li class="rates__feature rates__feature--highlight"><i class="bi bi-people-fill rates__icon"></i> <strong>Capacidad:</strong> Hasta 50 personas</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> 2 bohíos (espacios para recreación cerca a la piscina)</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Piscina de agua natural</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Bafle para ambientar el lugar</li>
-                        <li class="rates__feature"><i class="bi bi-check-circle-fill rates__icon"></i> Silletería y mesas</li>
-                        <li class="rates__feature">
-                            <i class="bi bi-check-circle-fill rates__icon"></i> Menaje de cocina (ollas, estufa, nevera, fogón de leña)
-                            <small class="rates__note"><em>*Se recomienda llevar platos y cubiertos.</em></small>
-                        </li>
-                    </ul>
-                    <div class="rates__alert">
-                        <strong><i class="bi bi-exclamation-triangle-fill rates__alert-icon"></i> NOTA:</strong> Para confirmar la actividad se debe abonar la mitad del valor del alquiler.
-                    </div>
-                    <a href="reservas.html" class="btn rates__btn">Reservar Pasadía</a>
-                </div>
-            </div>
-        </div>
-
     </div>
 </section>
 
