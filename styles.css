@@ -775,68 +775,6 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 }
 
 /* =========================================
-   ESTILOS PREMIUM PARA RESEÑAS
-   ========================================= */
-
-/* 1. Modal Elegante */
-.modal-content {
-    border-radius: 20px !important;
-    border: none;
-    box-shadow: var(--shadow-hover);
-    background-color: var(--color-white);
-}
-
-.modal-header {
-    background-color: var(--color-primary) !important;
-    color: var(--color-white);
-    padding: 1.5rem 2rem;
-    border-radius: 20px 20px 0 0;
-}
-
-/* 2. Botón de envío (Terracota) */
-.btn-resena {
-    background-color: var(--color-accent) !important;
-    color: var(--color-white) !important;
-    border-radius: 50rem !important;
-    padding: 0.8rem 2rem !important;
-    border: none !important;
-    transition: 0.3s !important;
-}
-
-.btn-resena:hover {
-    background-color: var(--color-accent-hover) !important;
-}
-
-/* 3. Tarjetas de Reseña (Efecto flotante) */
-.resena-card {
-    background-color: var(--color-white);
-    border-radius: 20px !important;
-    padding: 2rem;
-    box-shadow: var(--shadow-soft);
-    text-align: center;
-    height: 100%;
-}
-
-.stars-color {
-    color: var(--color-sun) !important; /* Amarillo Sol */
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.resena-texto {
-    color: var(--color-muted);
-    font-size: 0.95rem;
-    font-style: italic;
-}
-
-.resena-autor {
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-top: 1rem;
-    display: block;
-}
-
-/* =========================================
    RESEÑAS (Estilo Hemma Genki - INDEX)
    ========================================= */
 .testimonials {
@@ -864,7 +802,8 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     display: flex;
     overflow-x: auto;
     gap: 1.5rem;
-    padding: 1rem 0.5rem 3rem 0.5rem;
+    /* CORRECCIÓN 1: Aumentamos el padding lateral a 1.5rem para que respire en los bordes */
+    padding: 1rem 1.5rem 3rem 1.5rem; 
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; 
@@ -884,6 +823,11 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     padding: 2rem 1.5rem;
     box-shadow: 0 10px 30px rgba(62, 54, 46, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* CORRECCIÓN 2: Centrar automáticamente la tarjeta si es la única que existe */
+.testimonial-card:only-child {
+    margin: 0 auto;
 }
 
 .testimonial-card:hover {
@@ -907,9 +851,96 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 
 @media (min-width: 992px) {
     .testimonials__slider {
-        justify-content: center; /* Centrar tarjetas si son pocas en desktop */
+        /* Mantiene todo centrado en pantallas grandes si hay 2 o 3 reseñas */
+        justify-content: center; 
     }
     .testimonial-card {
         flex: 0 0 calc(33.333% - 1rem); /* 3 columnas en desktop */
     }
+}
+
+/* =========================================
+   PÁGINA "MIS RESEÑAS" (resenas.html)
+   ========================================= */
+
+/* Estilo para las tarjetas en la cuadrícula */
+.resena-card {
+    background-color: var(--color-white);
+    border-radius: 12px; 
+    padding: 2rem 1.5rem;
+    box-shadow: var(--shadow-soft);
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resena-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Tipografía elegante para el comentario (igual al index) */
+.resena-texto {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--color-dark);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+/* Nombre del autor de la reseña */
+.resena-autor {
+    font-size: 0.95rem;
+    color: var(--color-dark);
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Color Amarillo Sol para las estrellas en toda la página */
+.stars-color i, 
+.star-interactive.hover, 
+.star-interactive.activa, 
+.star-interactive.bi-star-fill {
+    color: var(--color-sun) !important;
+}
+
+/* Estilo para las estrellas del formulario de calificación */
+.star-interactive {
+    font-size: 2rem;
+    color: #d1cbc3; /* Color gris suave para las estrellas vacías */
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.star-interactive:hover {
+    transform: scale(1.1);
+}
+
+/* Botón principal de la página (Ej: "Calificar Experiencia") */
+.btn-resena {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    padding: 0.8rem 2.5rem;
+    border-radius: 50rem;
+    border: none;
+    box-shadow: 0 4px 15px rgba(212, 91, 67, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-resena:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 91, 67, 0.4);
+}
+
+/* Ajuste sutil para el botón de eliminar reseña (Admin) */
+.resena-card .btn-outline-danger {
+    border-radius: 50rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    margin-top: 1rem;
 }
