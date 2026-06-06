@@ -2,55 +2,60 @@ const URL_BACKEND = 'https://kazawencas.onrender.com/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
-    // 1. LÓGICA DE LAS ESTRELLAS INTERACTIVAS
+    // 1. LÓGICA DE LAS ESTRELLAS INTERACTIVAS (Protegida)
     // ==========================================
     const estrellas = document.querySelectorAll('.star-interactive');
     const inputCalificacion = document.getElementById('calificacion');
     const errorCalificacion = document.getElementById('error-calificacion');
 
-    estrellas.forEach(estrella => {
-        estrella.addEventListener('mouseover', function() {
-            const valor = this.getAttribute('data-value');
-            pintarEstrellas(valor, 'hover');
-        });
-
-        estrella.addEventListener('mouseout', function() {
-            pintarEstrellas(inputCalificacion.value, 'activa');
-        });
-
-        estrella.addEventListener('click', function() {
-            const valor = this.getAttribute('data-value');
-            inputCalificacion.value = valor;
-            pintarEstrellas(valor, 'activa');
-            if(errorCalificacion) errorCalificacion.classList.add('d-none'); 
-        });
-    });
-
-    function pintarEstrellas(valorLimite, clase) {
+    // Solo agregar eventos si existen las estrellas (es decir, en resenas.html)
+    if (estrellas.length > 0 && inputCalificacion) {
         estrellas.forEach(estrella => {
-            estrella.classList.remove('bi-star-fill', 'bi-star', 'hover', 'activa');
-            if (estrella.getAttribute('data-value') <= (valorLimite || 0)) {
-                estrella.classList.add('bi-star-fill', clase);
-            } else {
-                estrella.classList.add('bi-star');
-                estrella.style.color = ''; 
-            }
+            estrella.addEventListener('mouseover', function() {
+                const valor = this.getAttribute('data-value');
+                pintarEstrellas(valor, 'hover');
+            });
+
+            estrella.addEventListener('mouseout', function() {
+                pintarEstrellas(inputCalificacion.value, 'activa');
+            });
+
+            estrella.addEventListener('click', function() {
+                const valor = this.getAttribute('data-value');
+                inputCalificacion.value = valor;
+                pintarEstrellas(valor, 'activa');
+                if(errorCalificacion) errorCalificacion.classList.add('d-none'); 
+            });
         });
+
+        function pintarEstrellas(valorLimite, clase) {
+            estrellas.forEach(estrella => {
+                estrella.classList.remove('bi-star-fill', 'bi-star', 'hover', 'activa');
+                if (estrella.getAttribute('data-value') <= (valorLimite || 0)) {
+                    estrella.classList.add('bi-star-fill', clase);
+                } else {
+                    estrella.classList.add('bi-star');
+                    estrella.style.color = ''; 
+                }
+            });
+        }
     }
 
     // ==========================================
-    // 2. LÓGICA DE ENVÍO AL BACKEND (CREAR)
+    // 2. LÓGICA DE ENVÍO AL BACKEND (Protegida)
     // ==========================================
     const formResena = document.getElementById('form-resena');
     const alertaResena = document.getElementById('alerta-resena');
     const btnEnviar = document.getElementById('btn-enviar-resena');
 
+    // Solo agregar el evento si existe el formulario
     if (formResena) {
         formResena.addEventListener('submit', async (e) => {
             e.preventDefault(); 
 
-            const calificacion = inputCalificacion.value;
-            const comentario = document.getElementById('comentario').value;
+            const calificacion = inputCalificacion ? inputCalificacion.value : null;
+            const comentarioInput = document.getElementById('comentario');
+            const comentario = comentarioInput ? comentarioInput.value : '';
             
             if (!calificacion) {
                 if(errorCalificacion) errorCalificacion.classList.remove('d-none');
@@ -72,8 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                btnEnviar.disabled = true;
-                btnEnviar.textContent = 'Enviando...';
+                if(btnEnviar) {
+                    btnEnviar.disabled = true;
+                    btnEnviar.textContent = 'Enviando...';
+                }
 
                 const respuesta = await fetch(`${URL_BACKEND}/resenas`, {
                     method: 'POST',
@@ -88,16 +95,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     mostrarAlerta('¡Gracias por tu opinión! Tu reseña ha sido publicada.', 'success');
                     
                     formResena.reset(); 
-                    inputCalificacion.value = '';
-                    pintarEstrellas(0, '');
+                    if(inputCalificacion) inputCalificacion.value = '';
+                    
+                    // Asegurarnos de que pintarEstrellas exista en este contexto antes de llamarla
+                    const pintarEstrellasFn = function(valorLimite, clase) {
+                        estrellas.forEach(estrella => {
+                            estrella.classList.remove('bi-star-fill', 'bi-star', 'hover', 'activa');
+                            if (estrella.getAttribute('data-value') <= (valorLimite || 0)) {
+                                estrella.classList.add('bi-star-fill', clase);
+                            } else {
+                                estrella.classList.add('bi-star');
+                                estrella.style.color = ''; 
+                            }
+                        });
+                    };
+                    pintarEstrellasFn(0, '');
                     
                     cargarResenas();
                     
                     setTimeout(() => {
                         const modalElement = document.getElementById('modalResena');
-                        const modal = bootstrap.Modal.getInstance(modalElement);
-                        if (modal) modal.hide();
-                        alertaResena.classList.add('d-none');
+                        if (modalElement) {
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            if (modal) modal.hide();
+                        }
+                        if (alertaResena) alertaResena.classList.add('d-none');
                     }, 2000);
                 } else {
                     const error = await respuesta.json();
@@ -107,8 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error al enviar la reseña:', error);
                 mostrarAlerta('Error de conexión con el servidor.', 'danger');
             } finally {
-                btnEnviar.disabled = false;
-                btnEnviar.textContent = 'Enviar Reseña';
+                if(btnEnviar) {
+                    btnEnviar.disabled = false;
+                    btnEnviar.textContent = 'Enviar Reseña';
+                }
             }
         });
     }
@@ -117,9 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if(alertaResena) {
             alertaResena.textContent = mensaje;
             alertaResena.className = `alert alert-${tipo} mt-3`; 
+            alertaResena.classList.remove('d-none');
         }
     }
 
+    // ==========================================
+    // ESTA ES LA CLAVE: Llamar a cargarResenas siempre
+    // ==========================================
     cargarResenas();
 });
 
@@ -156,19 +184,22 @@ window.mostrarConfirmacion = function(mensaje, callbackAceptar) {
         modalEl = document.getElementById('modal-confirmacion');
     }
 
-    document.getElementById('modal-confirmacion-mensaje').innerText = mensaje;
+    const mensajeEl = document.getElementById('modal-confirmacion-mensaje');
+    if (mensajeEl) mensajeEl.innerText = mensaje;
 
     const btnAceptar = document.getElementById('btn-confirmar-accion');
-    const nuevoBtnAceptar = btnAceptar.cloneNode(true);
-    btnAceptar.parentNode.replaceChild(nuevoBtnAceptar, btnAceptar);
+    if (btnAceptar) {
+        const nuevoBtnAceptar = btnAceptar.cloneNode(true);
+        btnAceptar.parentNode.replaceChild(nuevoBtnAceptar, btnAceptar);
 
-    const bsModal = new bootstrap.Modal(modalEl);
-    bsModal.show();
+        const bsModal = new bootstrap.Modal(modalEl);
+        bsModal.show();
 
-    nuevoBtnAceptar.addEventListener('click', () => {
-        bsModal.hide();
-        callbackAceptar(); 
-    });
+        nuevoBtnAceptar.addEventListener('click', () => {
+            bsModal.hide();
+            callbackAceptar(); 
+        });
+    }
 };
 
 // ==========================================
