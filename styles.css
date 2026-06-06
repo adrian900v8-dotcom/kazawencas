@@ -197,14 +197,30 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 /* =========================================
    TARIFAS — .rates (ESTILO ECO-LUXURY COMPACTO)
    ========================================= */
-.rates { margin-bottom: 4rem; padding-bottom: 2rem; }
-
-.rates__title { 
-    margin-bottom: 2.5rem; color: var(--color-primary); 
-    font-weight: 700; text-align: center; font-size: 2.5rem; 
+.rates { 
+    margin-bottom: 4rem; 
+    padding-bottom: 2rem; 
 }
 
-.rates__grid { margin-top: 2rem; gap: 2.5rem; padding: 0 1.5rem; max-width: 1100px; margin: 0 auto; }
+.rates__title { 
+    margin-bottom: 2.5rem; 
+    color: var(--color-primary); 
+    font-weight: 700; 
+    text-align: center; 
+    font-size: 2.5rem; 
+}
+
+/* Contenedor flexible que ajusta las tarjetas automáticamente */
+.rates__grid { 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem; 
+    gap: 2rem; 
+    padding: 0 1.5rem; 
+    max-width: 1000px; /* Ancho ideal para que 2 tarjetas se vean bien en PC */
+    margin: 0 auto; 
+}
 
 /* Tarjeta Compacta con Imagen */
 .rates__card {
@@ -214,6 +230,9 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     box-shadow: var(--shadow-soft) !important;
     transition: transform 0.3s ease;
     height: 100%;
+    /* Asegura que las tarjetas tengan un ancho base y no se deformen */
+    width: 100%;
+    max-width: 350px; 
 }
 
 .rates__card:hover { transform: translateY(-8px); }
@@ -234,7 +253,11 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     color: var(--color-primary); font-size: 1.5rem; 
 }
 
-.rates__card-price { font-weight: 700; color: var(--color-accent); font-size: 1.2rem; }
+.rates__card-price { 
+    font-weight: 700; 
+    color: var(--color-accent); 
+    font-size: 1.2rem; 
+}
 
 .rates__card-features { 
     font-size: 0.75rem; color: var(--color-accent); 
@@ -242,6 +265,8 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
 }
 
 .rates__card-desc { color: var(--color-muted); font-size: 0.9rem; line-height: 1.5; }
+
+
 /* ==========================================
    OPTIMIZACIÓN MÓVIL PARA TARJETAS DE TARIFAS
    ========================================== */
