@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
         text-align: center;
     }
     .header-nav__btn-logout {
-        width: 100%;
+        width: auto;
         margin-top: 1rem;
     }
 }
