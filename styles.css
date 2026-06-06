@@ -969,3 +969,41 @@ h1, h2, h3, h4, h5, h6, .hero__title, .header-nav__brand {
     letter-spacing: 1px;
     margin-top: 1rem;
 }
+
+/* --- Estilos del Botón Hamburguesa Animado --- */
+.menu-btn { cursor: pointer; padding: 10px; }
+.menu-btn .bar {
+    display: block; width: 25px; height: 3px; margin: 5px auto;
+    background-color: white; transition: all 0.3s ease-in-out;
+}
+
+/* Animación a X */
+.menu-btn.active .bar:nth-child(2) { opacity: 0; }
+.menu-btn.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.menu-btn.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* --- Menú Deslizante (Slide-in) --- */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        height: 100vh;
+        background-color: var(--color-primary);
+        transition: 0.4s ease-in-out;
+        padding-top: 100px;
+        z-index: 1000; /* Menor que el z-index del botón si lo necesitas */
+        text-align: center;
+    }
+    
+    .navbar-collapse.show {
+        right: 0;
+    }
+
+    /* Aseguramos que el botón hamburguesa se mantenga visible sobre el menú */
+    .menu-btn {
+        position: relative;
+        z-index: 1050; /* Mayor que el z-index del navbar-collapse */
+    }
+}

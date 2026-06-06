@@ -1,9 +1,8 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Buscamos el contenedor del menú
     const menuContenedor = document.getElementById("menu-contenedor") || document.getElementById("navbar-container");
 
     if (menuContenedor) {
-        // Inyectamos el menú
         fetch("navbar.html")
             .then(respuesta => {
                 if (!respuesta.ok) throw new Error("Error al cargar el navbar");
@@ -12,29 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(codigoHtml => {
                 menuContenedor.innerHTML = codigoHtml;
                 
-                // ==========================================
-                // FIX 1: CONTROL DE VISIBILIDAD DEL PANEL ADMIN
-                // ==========================================
-                const navAdmin = document.getElementById('nav-admin');
-                const rolUsuario = localStorage.getItem('rol_finca'); // Leemos el rol guardado en el login
+                // === INICIALIZACIÓN DE LÓGICA DEL MENÚ ===
+                inicializarLogicaMenu();
                 
+                // === CONTROL DE VISIBILIDAD (Tu lógica original) ===
+                const navAdmin = document.getElementById('nav-admin');
+                const rolUsuario = localStorage.getItem('rol_finca');
                 if (navAdmin) {
-                    // Solo mostramos el panel si el rol existe y es 'admin'
-                    if (rolUsuario && rolUsuario.toLowerCase() === 'admin') {
-                        navAdmin.style.display = 'block'; 
-                    } else {
-                        navAdmin.style.display = 'none';
-                    }
+                    navAdmin.style.display = (rolUsuario && rolUsuario.toLowerCase() === 'admin') ? 'block' : 'none';
                 }
 
-                // ==========================================
-                // FIX OPCIONAL: CAMBIAR TEXTO SI NO HAY SESIÓN
-                // ==========================================
                 const btnLogout = document.getElementById('btn-logout');
                 const token = localStorage.getItem('token_finca');
-                
                 if (btnLogout && !token) {
-                    // Si no hay sesión iniciada, cambiamos el texto a "Iniciar Sesión"
                     btnLogout.textContent = 'Iniciar Sesión';
                 }
             })
@@ -42,26 +31,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Función para manejar la animación del botón hamburguesa y el slide-in
+function inicializarLogicaMenu() {
+    const menuBtn = document.querySelector('.menu-btn');
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+
+    if (menuBtn && navbarCollapse) {
+        // Toggle para la animación de la X
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en cualquier enlace
+        document.querySelectorAll('.header-nav__link').forEach(link => {
+            link.addEventListener('click', () => {
+                if(navbarCollapse.classList.contains('show')) {
+                    // Usamos la API de Bootstrap para cerrar el colapso
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse);
+                    bsCollapse.hide();
+                    menuBtn.classList.remove('active');
+                }
+            });
+        });
+    }
+}
+
 // ==========================================
 // SISTEMA GLOBAL DE NOTIFICACIONES (TOASTS)
 // ==========================================
 window.mostrarNotificacion = function(mensaje, tipo = 'success') {
-    // 1. Verificamos si ya existe el contenedor de notificaciones, si no, lo creamos
     let container = document.getElementById('toast-container');
     if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
         container.className = 'toast-container position-fixed top-0 end-0 p-3';
         container.style.zIndex = '1055';
-        container.style.marginTop = '80px'; // Para que aparezca debajo del navbar
+        container.style.marginTop = '80px';
         document.body.appendChild(container);
     }
     
-    // 2. Configuramos colores e iconos según el tipo
     const bgClass = tipo === 'success' ? 'bg-success' : (tipo === 'danger' ? 'bg-danger' : 'bg-primary');
     const iconClass = tipo === 'success' ? 'bi-check-circle-fill' : (tipo === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill');
 
-    // 3. Creamos el HTML de la notificación
     const toastHtml = `
         <div class="toast align-items-center text-white ${bgClass} border-0 shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" style="border-radius: 12px;">
             <div class="d-flex">
@@ -73,48 +84,36 @@ window.mostrarNotificacion = function(mensaje, tipo = 'success') {
         </div>
     `;
     
-    // 4. Lo inyectamos y lo mostramos
     const div = document.createElement('div');
     div.innerHTML = toastHtml;
     const toastEl = div.firstElementChild;
     container.appendChild(toastEl);
     
-    const toast = new bootstrap.Toast(toastEl, { delay: 4000 }); // Desaparece en 4 segundos
+    const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
     toast.show();
-    
-    // Lo borramos del HTML cuando termine la animación
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
 };
 
 // ==========================================
-// DELEGACIÓN DE EVENTOS PARA EL BOTÓN LOGOUT/LOGIN
+// DELEGACIÓN DE EVENTOS PARA EL LOGOUT
 // ==========================================
 document.addEventListener('click', (evento) => {
     if (evento.target && evento.target.id === 'btn-logout') {
         evento.preventDefault();
-        
         const token = localStorage.getItem('token_finca');
         
-        // BORRADO REAL DE LA SESIÓN
         if (token) {
-            console.log("Cerrando sesión de verdad...");
-            
-            // Borramos TODOS los datos que creamos en login.js
             localStorage.removeItem('token_finca');
             localStorage.removeItem('rol_finca');
             localStorage.removeItem('id_usuario_finca');
             localStorage.removeItem('nombre_usuario_finca');
             
-            // Llamamos a la nueva notificación en lugar del alert
             mostrarNotificacion("Has cerrado sesión correctamente.", "success");
             
-            // Redirigir al login después de 1.5 segundos para que alcance a leer el mensaje
             setTimeout(() => {
                 window.location.href = "login.html"; 
             }, 1500);
-            
         } else {
-            // Si no había token, simplemente lo mandamos al login
             window.location.href = "login.html"; 
         }
     }
