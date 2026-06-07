@@ -1,6 +1,6 @@
 const URL_BACKEND = 'https://kazawencas.onrender.com/api';
 const tokenGuardado = localStorage.getItem('token_finca');
-const NUMERO_WHATSAPP = '573184643996'; // Tu número de WhatsApp configurado
+const NUMERO_WHATSAPP = '573215879694'; // Tu número de WhatsApp configurado
 
 if (!tokenGuardado) {
     window.location.href = 'login.html';
